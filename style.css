@@ -6,10 +6,33 @@ body {
     padding: 20px;
 }
 
+h1 {
+    margin-top: 0;
+    text-align: center; /* Centraliza o título */
+}
+
 #informacoesCarro {
     margin-top: 20px;
     border: 1px solid #ccc;
     padding: 10px;
+    width: 80%; /* Adiciona largura para melhor aparência */
+    text-align: center; /* Centraliza o texto dentro da div */
+}
+
+#informacoesCarroEsportivo {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 80%; /* Adiciona largura para melhor aparência */
+    text-align: center; /* Centraliza o texto dentro da div */
+}
+
+#informacoesCaminhao {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 80%; /* Adiciona largura para melhor aparência */
+    text-align: center; /* Centraliza o texto dentro da div */
 }
 
 button {
@@ -17,4 +40,44 @@ button {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
+    background-color: #4CAF50; /* Cor verde */
+    color: white; /* Texto branco */
+    border: none; /* Remove a borda */
+    border-radius: 5px; /* Adiciona bordas arredondadas */
+}
+
+button:hover {
+    background-color: #3e8e41; /* Escurece a cor no hover */
+}
+
+/* Estilos específicos para os parágrafos de informação */
+p {
+    margin: 5px 0;
+}
+
+/* Estilos para os campos de entrada (input) */
+input[type="number"] {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+
+/* Estilos para os labels */
+label {
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+#mostrarCarro,
+#mostrarCarroEsportivo,
+#mostrarCaminhao {
+    background-color: #008CBA; /* Cor azul */
+}
+
+#mostrarCarro:hover,
+#mostrarCarroEsportivo:hover,
+#mostrarCaminhao:hover {
+    background-color: #0077A3; /* Escurece a cor no hover */
 }
