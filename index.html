@@ -9,21 +9,45 @@
 <body>
     <h1>Meu Carro</h1>
 
-    <button id="mostrarCarro">Mostrar Carro</button>
-    <button id="mostrarCarroEsportivo">Mostrar Carro Esportivo</button>
-    <button id="mostrarCaminhao">Mostrar Caminhão</button>
+    <div id="garagem">
+        <button id="abrirGaragem">Garagem</button>
+        <div id="opcoesGaragem" style="display: none;">
+            <button class="escolherVeiculo" data-veiculo="carro">Carro</button>
+            <button class="escolherVeiculo" data-veiculo="carroEsportivo">Carro Esportivo</button>
+            <button class="escolherVeiculo" data-veiculo="caminhao">Caminhão</button>
+        </div>
+    </div>
 
-    <img id="imagemCarro" src="img/carro.png" alt="Carro" width="300">
+    <img id="imagemCarro" src="" alt="" width="300" style="display: none;">
 
-    <div id="informacoesCarro">
+    <!-- Interações Comuns -->
+    <div id="interacoesComuns" style="display: none;">
+        <button class="interagir" data-acao="ligar">Ligar/Desligar</button>
+        <button class="interagir" data-acao="acelerar">Acelerar</button>
+        <button class="interagir" data-acao="frear">Frear</button>
+        <button class="interagir" data-acao="buzinar">Buzinar</button>
+        <button id="voltarGaragem">Voltar para Garagem</button>
+    </div>
+
+    <!-- Interações Específicas -->
+    <div id="interacoesCarroEsportivo" style="display: none;">
+        <button class="interagir" data-acao="ativarTurbo">Ativar Turbo</button>
+        <button class="interagir" data-acao="desativarTurbo">Desativar Turbo</button>
+    </div>
+
+    <div id="interacoesCaminhao" style="display: none;">
+        <label for="quantidadeCarga">Quantidade de Carga:</label>
+        <input type="number" id="quantidadeCarga" value="1000">
+        <button class="interagir" data-acao="carregar">Carregar</button>
+        <button class="interagir" data-acao="descarregar">Descarregar</button>
+    </div>
+
+    <div id="informacoesCarro" style="display: none;">
         <h2>Carro Comum</h2>
         <p>Modelo: <span id="modeloCarro"></span></p>
         <p>Cor: <span id="corCarro"></span></p>
         <p>Velocidade: <span id="velocidadeCarro">0</span> km/h</p>
         <p>Status: <span id="statusCarro">Desligado</span></p>
-        <button id="ligarDesligar">Ligar/Desligar</button>
-        <button id="acelerar">Acelerar</button>
-        <button id="frear">Frear</button>
     </div>
 
     <div id="informacoesCarroEsportivo" style="display: none;">
@@ -33,12 +57,6 @@
         <p>Velocidade: <span id="velocidadeCarroEsportivo">0</span> km/h</p>
         <p>Status: <span id="statusCarroEsportivo">Desligado</span></p>
         <p>Turbo: <span id="turboCarroEsportivo">Desativado</span></p>
-        <button id="ligarDesligarCarroEsportivo">Ligar/Desligar</button>
-        <button id="acelerarCarroEsportivo">Acelerar</button>
-        <button id="frearCarroEsportivo">Frear</button>
-        <button id="ativarTurbo">Ativar Turbo</button>
-        <button id="desativarTurbo">Desativar Turbo</button>
-        <button id="buzinarCarroEsportivo">Buzinar</button>
     </div>
 
     <div id="informacoesCaminhao" style="display: none;">
@@ -49,22 +67,13 @@
         <p>Status: <span id="statusCaminhao">Desligado</span></p>
         <p>Capacidade de Carga: <span id="capacidadeCargaCaminhao"></span> kg</p>
         <p>Carga Atual: <span id="cargaAtualCaminhao">0</span> kg</p>
-        <label for="quantidadeCarga">Quantidade de Carga:</label>
-        <input type="number" id="quantidadeCarga" value="1000">
-        <button id="ligarDesligarCaminhao">Ligar/Desligar</button>
-        <button id="acelerarCaminhao">Acelerar</button>
-        <button id="frearCaminhao">Frear</button>
-        <button id="carregarCaminhao">Carregar</button>
-        <button id="descarregarCaminhao">Descarregar</button>
-        <button id="buzinarCaminhao">Buzinar</button>
     </div>
 
     <audio id="somAceleracao" src="som/carroAcelerando.mp3" preload="auto"></audio>
     <audio id="somLigando" src="som/carroLigando.mp3" preload="auto"></audio>
     <audio id="somTurbo" src="som/turbo.mp3" preload="auto"></audio>
-
     <audio id="somBuzinaCarro" src="som/buzinaCarro.mp3" preload="auto"></audio>
-     <audio id="somBuzinaEsportivo" src="som/buzinaEsportivo.mp3" preload="auto"></audio>
+    <audio id="somBuzinaEsportivo" src="som/buzinaEsportivo.mp3" preload="auto"></audio>
     <audio id="somBuzinaCaminhao" src="som/buzinaCaminhao.mp3" preload="auto"></audio>
 
     <script src="script.js"></script>
