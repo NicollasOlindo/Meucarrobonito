@@ -1,0 +1,85 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+h1 {
+    margin-top: 0;
+    text-align: center;
+}
+
+/* Esconde as divs de informações por padrão */
+#informacoesCarro,
+#informacoesCarroEsportivo,
+#informacoesCaminhao,
+#garagem {
+    display: none;
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 80%;
+    text-align: center;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #3e8e41;
+}
+
+input[type="number"] {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+
+label {
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+/* Estilos específicos para a tela do menu principal */
+#menuPrincipal {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Estilos para os botões Ligar/Desligar */
+button#ligarDesligar,
+button#ligarDesligarCarroEsportivo,
+button#ligarDesligarCaminhao {
+    background-color: green;
+    color: white;
+}
+
+button#ligarDesligar:hover,
+button#ligarDesligarCarroEsportivo:hover,
+button#ligarDesligarCaminhao:hover {
+    background-color: darkgreen;
+}
+
+/* Estilos para os botões de desligar */
+button#ligarDesligar[textContent="Desligar"],
+button#ligarDesligarCarroEsportivo[textContent="Desligar"],
+button#ligarDesligarCaminhao[textContent="Desligar"] {
+    background-color: red;
+    color: white;
+}
+
+button#ligarDesligar[textContent="Desligar"]:hover,
+button#ligarDesligarCarroEsportivo[textContent="Desligar"]:hover,
+button#ligarDesligarCaminhao[textContent="Desligar"]:hover {
+    background-color: darkred;
+}
