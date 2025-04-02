@@ -3,72 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carro Interativo</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Garagem Inteligente</title>
+    <link rel="stylesheet" href="style.css"> <!-- Certifique-se que seu CSS está atualizado -->
 </head>
 <body>
-    <h1>Meu Carro</h1>
+    <!-- ==========================
+         TELA DO MENU PRINCIPAL
+         ========================== -->
+    <div id="menuPrincipal">
+        <h1>Minha Garagem Inteligente</h1>
+        <button id="botaoGaragem">Acessar Garagem</button>
+    </div>
 
-    <div id="garagem">
-        <button id="abrirGaragem">Garagem</button>
-        <div id="opcoesGaragem" style="display: none;">
-            <button class="escolherVeiculo" data-veiculo="carro">Carro</button>
-            <button class="escolherVeiculo" data-veiculo="carroEsportivo">Carro Esportivo</button>
-            <button class="escolherVeiculo" data-veiculo="caminhao">Caminhão</button>
+    <!-- ==========================
+         TELA DA GARAGEM
+         ========================== -->
+    <div id="garagem" style="display: none;">
+        <h2>Garagem</h2>
+
+        <!-- Lista de Veículos (Preenchida pelo JS) -->
+        <div id="listaVeiculosGaragem">
+            <p>Nenhum veículo na garagem.</p>
         </div>
+        <hr>
+
+        <!-- Formulário para Adicionar Novo Veículo -->
+        <h3>Adicionar Novo Veículo</h3>
+        <form id="formAdicionarVeiculo">
+            <label for="tipoNovoVeiculo">Tipo:</label>
+            <select id="tipoNovoVeiculo" required>
+                <option value="Carro" selected>Carro Comum</option>
+                <option value="CarroEsportivo">Carro Esportivo</option>
+                <option value="Caminhao">Caminhão</option>
+            </select>
+
+            <label for="modeloNovoVeiculo">Modelo:</label>
+            <input type="text" id="modeloNovoVeiculo" required placeholder="Ex: Fusca">
+
+            <label for="corNovoVeiculo">Cor:</label>
+            <input type="text" id="corNovoVeiculo" required placeholder="Ex: Azul">
+
+            <!-- Campo adicional para Caminhão (Controlado pelo JS) -->
+            <div id="campoCapacidadeCaminhao" style="display:none;">
+                <label for="capacidadeNovoCaminhao">Capacidade Carga (kg):</label>
+                <input type="number" id="capacidadeNovoCaminhao" min="1" value="10000">
+            </div>
+
+            <button type="submit">Adicionar à Garagem</button>
+        </form>
+        <hr>
+
+        <button id="voltarParaMenu">Voltar para o Menu Principal</button>
     </div>
 
-    <img id="imagemCarro" src="" alt="" width="300" style="display: none;">
-
-    <!-- Interações Comuns -->
-    <div id="interacoesComuns" style="display: none;">
-        <button class="interagir" data-acao="ligar">Ligar/Desligar</button>
-        <button class="interagir" data-acao="acelerar">Acelerar</button>
-        <button class="interagir" data-acao="frear">Frear</button>
-        <button class="interagir" data-acao="buzinar">Buzinar</button>
-        <button id="voltarGaragem">Voltar para Garagem</button>
-    </div>
-
-    <!-- Interações Específicas -->
-    <div id="interacoesCarroEsportivo" style="display: none;">
-        <button class="interagir" data-acao="ativarTurbo">Ativar Turbo</button>
-        <button class="interagir" data-acao="desativarTurbo">Desativar Turbo</button>
-    </div>
-
-    <div id="interacoesCaminhao" style="display: none;">
-        <label for="quantidadeCarga">Quantidade de Carga:</label>
-        <input type="number" id="quantidadeCarga" value="1000">
-        <button class="interagir" data-acao="carregar">Carregar</button>
-        <button class="interagir" data-acao="descarregar">Descarregar</button>
-    </div>
-
+    <!-- ==========================
+         DETALHES DO CARRO COMUM
+         ========================== -->
     <div id="informacoesCarro" style="display: none;">
         <h2>Carro Comum</h2>
-        <p>Modelo: <span id="modeloCarro"></span></p>
-        <p>Cor: <span id="corCarro"></span></p>
-        <p>Velocidade: <span id="velocidadeCarro">0</span> km/h</p>
-        <p>Status: <span id="statusCarro">Desligado</span></p>
+
+        <!-- Container para layout de duas colunas -->
+        <div class="detalhes-container">
+
+            <!-- Coluna 1: Informações do Veículo -->
+            <div class="veiculo-info">
+                <img id="imagemCarro" src="img/carro.png" alt="Carro" width="200">
+                <p>Modelo: <span id="modeloCarro"></span></p>
+                <p>Cor: <span id="corCarro"></span></p>
+                <p>Velocidade: <span id="velocidadeCarro">0</span> km/h</p>
+                <p>Status: <span id="statusCarro">Desligado</span></p>
+
+                <!-- Botões de Ação com data-veiculo-id -->
+                <button id="ligarDesligarCarro" data-veiculo-id="">Ligar/Desligar</button>
+                <button id="acelerarCarro" data-veiculo-id="">Acelerar</button>
+                <button id="frearCarro" data-veiculo-id="">Frear</button>
+                <button id="buzinarCarro" data-veiculo-id="">Buzinar</button>
+                <button id="voltarParaGaragemCarro">Voltar para Garagem</button>
+            </div>
+
+            <!-- Coluna 2: Seção de Manutenção -->
+            <div class="manutencao-section">
+                <h3>Agendar Manutenção</h3>
+                <form id="formAgendamentoCarro" class="form-agendamento">
+                    <input type="hidden" id="agendamentoVeiculoIdCarro" value="">
+                    <div>
+                        <label for="dataAgendamentoCarro">Data:</label>
+                        <input type="date" id="dataAgendamentoCarro" required>
+                        <label for="horaAgendamentoCarro">Hora:</label>
+                        <input type="time" id="horaAgendamentoCarro" required>
+                    </div>
+                    <div>
+                        <label for="tipoServicoCarro">Tipo de Serviço:</label>
+                        <input type="text" id="tipoServicoCarro" required placeholder="Ex: Troca de óleo">
+                    </div>
+                    <div>
+                        <label for="custoServicoCarro">Custo (R$):</label>
+                        <input type="number" id="custoServicoCarro" min="0" step="0.01" required placeholder="0.00">
+                    </div>
+                    <div>
+                        <label for="descricaoServicoCarro">Descrição (Opcional):</label>
+                        <textarea id="descricaoServicoCarro" rows="2" placeholder="Detalhes adicionais..."></textarea>
+                    </div>
+                    <button type="submit">Agendar/Registrar Serviço</button>
+                </form>
+
+                <h4>Histórico de Manutenção</h4>
+                <ul id="historicoManutencaoCarro" class="lista-manutencao">
+                    <li>Nenhum histórico registrado.</li>
+                </ul>
+
+                <h4>Agendamentos Futuros</h4>
+                <ul id="agendamentosFuturosCarro" class="lista-manutencao">
+                    <li>Nenhum agendamento futuro.</li>
+                </ul>
+            </div>
+
+        </div> <!-- Fim do Container de Duas Colunas -->
     </div>
 
+    <!-- ==========================
+         DETALHES DO CARRO ESPORTIVO
+         ========================== -->
     <div id="informacoesCarroEsportivo" style="display: none;">
         <h2>Carro Esportivo</h2>
-        <p>Modelo: <span id="modeloCarroEsportivo"></span></p>
-        <p>Cor: <span id="corCarroEsportivo"></span></p>
-        <p>Velocidade: <span id="velocidadeCarroEsportivo">0</span> km/h</p>
-        <p>Status: <span id="statusCarroEsportivo">Desligado</span></p>
-        <p>Turbo: <span id="turboCarroEsportivo">Desativado</span></p>
+
+        <!-- Container para layout de duas colunas -->
+        <div class="detalhes-container">
+
+            <!-- Coluna 1: Informações do Veículo -->
+            <div class="veiculo-info">
+                <img id="imagemCarroEsportivo" src="img/carroEsportivo.png" alt="Carro Esportivo" width="200">
+                <p>Modelo: <span id="modeloCarroEsportivo"></span></p>
+                <p>Cor: <span id="corCarroEsportivo"></span></p>
+                <p>Velocidade: <span id="velocidadeCarroEsportivo">0</span> km/h</p>
+                <p>Status: <span id="statusCarroEsportivo">Desligado</span></p>
+                <p>Turbo: <span id="turboCarroEsportivo">Desativado</span></p>
+
+                <!-- Botões de Ação com data-veiculo-id -->
+                <button id="ligarDesligarCarroEsportivo" data-veiculo-id="">Ligar/Desligar</button>
+                <button id="acelerarCarroEsportivo" data-veiculo-id="">Acelerar</button>
+                <button id="frearCarroEsportivo" data-veiculo-id="">Frear</button>
+                <button id="ativarTurbo" data-veiculo-id="">Ativar Turbo</button>
+                <button id="desativarTurbo" data-veiculo-id="">Desativar Turbo</button>
+                <button id="buzinarCarroEsportivo" data-veiculo-id="">Buzinar</button>
+                <button id="voltarParaGaragemEsportivo">Voltar para Garagem</button>
+            </div>
+
+            <!-- Coluna 2: Seção de Manutenção -->
+            <div class="manutencao-section">
+                <h3>Agendar Manutenção</h3>
+                <form id="formAgendamentoCarroEsportivo" class="form-agendamento">
+                    <input type="hidden" id="agendamentoVeiculoIdCarroEsportivo" value="">
+                    <div>
+                        <label for="dataAgendamentoCarroEsportivo">Data:</label>
+                        <input type="date" id="dataAgendamentoCarroEsportivo" required>
+                        <label for="horaAgendamentoCarroEsportivo">Hora:</label>
+                        <input type="time" id="horaAgendamentoCarroEsportivo" required>
+                    </div>
+                    <div>
+                        <label for="tipoServicoCarroEsportivo">Tipo de Serviço:</label>
+                        <input type="text" id="tipoServicoCarroEsportivo" required placeholder="Ex: Revisão de freios">
+                    </div>
+                    <div>
+                        <label for="custoServicoCarroEsportivo">Custo (R$):</label>
+                        <input type="number" id="custoServicoCarroEsportivo" min="0" step="0.01" required placeholder="0.00">
+                    </div>
+                    <div>
+                        <label for="descricaoServicoCarroEsportivo">Descrição (Opcional):</label>
+                        <textarea id="descricaoServicoCarroEsportivo" rows="2" placeholder="Detalhes adicionais..."></textarea>
+                    </div>
+                    <button type="submit">Agendar/Registrar Serviço</button>
+                </form>
+
+                <h4>Histórico de Manutenção</h4>
+                <ul id="historicoManutencaoCarroEsportivo" class="lista-manutencao">
+                    <li>Nenhum histórico registrado.</li>
+                </ul>
+
+                <h4>Agendamentos Futuros</h4>
+                <ul id="agendamentosFuturosCarroEsportivo" class="lista-manutencao">
+                    <li>Nenhum agendamento futuro.</li>
+                </ul>
+            </div>
+
+        </div> <!-- Fim do Container de Duas Colunas -->
     </div>
 
+    <!-- ==========================
+         DETALHES DO CAMINHÃO
+         ========================== -->
     <div id="informacoesCaminhao" style="display: none;">
         <h2>Caminhão</h2>
-        <p>Modelo: <span id="modeloCaminhao"></span></p>
-        <p>Cor: <span id="corCaminhao"></span></p>
-        <p>Velocidade: <span id="velocidadeCaminhao">0</span> km/h</p>
-        <p>Status: <span id="statusCaminhao">Desligado</span></p>
-        <p>Capacidade de Carga: <span id="capacidadeCargaCaminhao"></span> kg</p>
-        <p>Carga Atual: <span id="cargaAtualCaminhao">0</span> kg</p>
+
+        <!-- Container para layout de duas colunas -->
+        <div class="detalhes-container">
+
+            <!-- Coluna 1: Informações do Veículo -->
+            <div class="veiculo-info">
+                <img id="imagemCaminhao" src="img/caminhao.png" alt="Caminhão" width="300">
+                <p>Modelo: <span id="modeloCaminhao"></span></p>
+                <p>Cor: <span id="corCaminhao"></span></p>
+                <p>Velocidade: <span id="velocidadeCaminhao">0</span> km/h</p>
+                <p>Capacidade de Carga: <span id="capacidadeCargaCaminhao"></span> kg</p>
+                <p>Carga Atual: <span id="cargaAtualCaminhao">0</span> kg</p>
+
+                <!-- Controles de Carga -->
+                <div>
+                    <label for="quantidadeCarga">Qtd. Carga (kg):</label>
+                    <input type="number" id="quantidadeCarga" value="1000" min="1">
+                    <button id="carregarCaminhao" data-veiculo-id="">Carregar</button>
+                    <button id="descarregarCaminhao" data-veiculo-id="">Descarregar</button>
+                </div>
+
+                <!-- Botões de Ação com data-veiculo-id -->
+                <button id="ligarDesligarCaminhao" data-veiculo-id="">Ligar/Desligar</button>
+                <button id="acelerarCaminhao" data-veiculo-id="">Acelerar</button>
+                <button id="frearCaminhao" data-veiculo-id="">Frear</button>
+                <button id="buzinarCaminhao" data-veiculo-id="">Buzinar</button>
+                <button id="voltarParaGaragemCaminhao">Voltar para Garagem</button>
+            </div>
+
+            <!-- Coluna 2: Seção de Manutenção -->
+            <div class="manutencao-section">
+                <h3>Agendar Manutenção</h3>
+                <form id="formAgendamentoCaminhao" class="form-agendamento">
+                    <input type="hidden" id="agendamentoVeiculoIdCaminhao" value="">
+                    <div>
+                        <label for="dataAgendamentoCaminhao">Data:</label>
+                        <input type="date" id="dataAgendamentoCaminhao" required>
+                         <label for="horaAgendamentoCaminhao">Hora:</label>
+                        <input type="time" id="horaAgendamentoCaminhao" required>
+                    </div>
+                    <div>
+                        <label for="tipoServicoCaminhao">Tipo de Serviço:</label>
+                        <input type="text" id="tipoServicoCaminhao" required placeholder="Ex: Troca de pneus">
+                    </div>
+                    <div>
+                        <label for="custoServicoCaminhao">Custo (R$):</label>
+                        <input type="number" id="custoServicoCaminhao" min="0" step="0.01" required placeholder="0.00">
+                    </div>
+                    <div>
+                        <label for="descricaoServicoCaminhao">Descrição (Opcional):</label>
+                        <textarea id="descricaoServicoCaminhao" rows="2" placeholder="Detalhes adicionais..."></textarea>
+                    </div>
+                    <button type="submit">Agendar/Registrar Serviço</button>
+                </form>
+
+                <h4>Histórico de Manutenção</h4>
+                <ul id="historicoManutencaoCaminhao" class="lista-manutencao">
+                    <li>Nenhum histórico registrado.</li>
+                </ul>
+
+                <h4>Agendamentos Futuros</h4>
+                <ul id="agendamentosFuturosCaminhao" class="lista-manutencao">
+                   <li>Nenhum agendamento futuro.</li>
+                </ul>
+            </div>
+
+        </div> <!-- Fim do Container de Duas Colunas -->
     </div>
 
+    <!-- ==========================
+         ELEMENTOS DE ÁUDIO
+         ========================== -->
     <audio id="somAceleracao" src="som/carroAcelerando.mp3" preload="auto"></audio>
     <audio id="somLigando" src="som/carroLigando.mp3" preload="auto"></audio>
     <audio id="somTurbo" src="som/turbo.mp3" preload="auto"></audio>
@@ -76,6 +273,9 @@
     <audio id="somBuzinaEsportivo" src="som/buzinaEsportivo.mp3" preload="auto"></audio>
     <audio id="somBuzinaCaminhao" src="som/buzinaCaminhao.mp3" preload="auto"></audio>
 
+    <!-- ==========================
+         LINK PARA O SCRIPT JS (NO FINAL)
+         ========================== -->
     <script src="script.js"></script>
 </body>
 </html>

@@ -1,73 +1,451 @@
+/* ===================================================
+   ESTILOS GERAIS (Melhorias Estéticas)
+   =================================================== */
+
+/* Paleta de Cores */
+:root {
+    --cor-fundo: #f8f9fa;          /* Off-white */
+    --cor-principal: #343a40;       /* Cinza escuro */
+    --cor-secundaria: #6c757d;      /* Cinza */
+    --cor-destaque: #007bff;        /* Azul */
+    --cor-sucesso: #28a745;         /* Verde */
+    --cor-alerta: #dc3545;          /* Vermelho */
+    --cor-texto: #212529;           /* Preto quase */
+    --cor-borda: #ced4da;           /* Cinza claro */
+}
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fonte mais moderna */
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
+    line-height: 1.6;               /* Melhora a legibilidade */
 }
 
-h1 {
-    margin-top: 0;
+h1, h2, h3, h4 {
+    color: var(--cor-principal);
     text-align: center;
+    margin-bottom: 15px;
 }
 
-#garagem {
-    margin-bottom: 20px;
-}
+/* ===================================================
+   ESTRUTURA PRINCIPAL
+   =================================================== */
 
-#opcoesGaragem {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
+#menuPrincipal,
+#garagem,
 #informacoesCarro,
 #informacoesCarroEsportivo,
 #informacoesCaminhao {
+    display: none;                  /* Esconde inicialmente */
     margin-top: 20px;
-    border: 1px solid #ccc;
-    padding: 10px;
-    width: 80%;
+    padding: 30px;                  /* Aumenta o espaço interno */
+    width: 90%;
+    max-width: 700px;               /* Limita a largura */
+    box-sizing: border-box;
+    background-color: white;       /* Fundo branco para contraste */
+    border-radius: 10px;            /* Bordas arredondadas */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Sombra suave */
+    text-align: left;               /* Alinha texto à esquerda */
+}
+
+#menuPrincipal {
     text-align: center;
+    margin-bottom: 30px;
 }
 
-button {
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
+/* ===================================================
+   LAYOUT DE DUAS COLUNAS PARA DETALHES DO VEÍCULO
+   =================================================== */
+
+.detalhes-container {
+    display: flex;                /* Cria um container flexível */
+    flex-wrap: wrap;             /* Permite que as colunas quebrem em telas menores */
+    gap: 20px;                   /* Espaçamento entre as colunas */
+    align-items: flex-start;      /* Alinha as colunas no topo */
 }
 
-button:hover {
-    background-color: #3e8e41;
+.veiculo-info {
+    flex: 1;                     /* Ocupa metade do espaço disponível */
+    min-width: 250px;            /* Largura mínima */
+    padding: 20px;               /* Espaçamento interno */
+    border-radius: 8px;           /* Bordas arredondadas */
+    background-color: var(--cor-fundo); /* Cor de fundo */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra suave */
 }
 
-p {
-    margin: 5px 0;
+.manutencao-section {
+    flex: 1;                     /* Ocupa a outra metade do espaço */
+    min-width: 300px;            /* Largura mínima */
+    padding: 20px;               /* Espaçamento interno */
+    border-radius: 8px;           /* Bordas arredondadas */
+    background-color: var(--cor-fundo); /* Cor de fundo */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra suave */
+    margin-top: 0;                /* Remove a margem superior */
+    border-top: none;             /* Remove a borda superior */
+    text-align: left;            /* Alinha o texto à esquerda */
 }
 
-input[type="number"] {
-    padding: 8px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-right: 5px;
+/* Otimização para telas menores */
+@media (max-width: 768px) {
+    .detalhes-container {
+        flex-direction: column;    /* Empilha as colunas */
+    }
+
+    .veiculo-info,
+    .manutencao-section {
+        width: 100%;                /* Ocupa toda a largura */
+        min-width: auto;           /* Remove a largura mínima */
+    }
+
+    /* Alinha o texto ao centro em telas menores para melhor visualização */
+    .veiculo-info {
+        text-align: center;
+    }
+}
+
+/* ===================================================
+   FORMULÁRIOS
+   =================================================== */
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    background-color: var(--cor-fundo);
+    border-radius: 8px;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); /* Sombra interna */
 }
 
 label {
-    margin-right: 5px;
     font-weight: bold;
+    color: var(--cor-principal);
+    margin-bottom: 5px;
 }
 
-/* Esconde os botões originais */
-/*
-#mostrarCarro,
-#mostrarCarroEsportivo,
-#mostrarCaminhao {
-    display: none;
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+select,
+textarea {
+    padding: 12px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 6px;
+    font-size: 16px;
+    color: var(--cor-texto);
+    background-color: white;
+    transition: border-color 0.2s ease;
 }
-*/
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--cor-destaque);
+    outline: none;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Estilo específico para o select de tipo de veículo */
+select {
+    cursor: pointer;
+}
+
+/* Estilo específico para a área de capacidade do caminhão */
+#campoCapacidadeCaminhao {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ===================================================
+   BOTÕES
+   =================================================== */
+
+button {
+    padding: 14px 25px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    background-color: var(--cor-destaque);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+button:hover {
+    background-color: #0056b3;          /* Escurece no hover */
+    transform: translateY(-1px);       /* Leve elevação */
+}
+
+/* Estilos específicos para botões de ação (verde) */
+#acelerarCarro, #frearCarro, #ativarTurbo, #desativarTurbo,
+#acelerarCarroEsportivo, #frearCarroEsportivo, #carregarCaminhao, #descarregarCaminhao,
+#acelerarCaminhao, #frearCaminhao{
+    background-color: var(--cor-sucesso);
+}
+
+#acelerarCarro:hover, #frearCarro:hover, #ativarTurbo:hover, #desativarTurbo:hover,
+#acelerarCarroEsportivo:hover, #frearCarroEsportivo:hover, #carregarCaminhao:hover, #descarregarCaminhao:hover,
+#acelerarCaminhao:hover, #frearCaminhao:hover {
+    background-color: #1e7e34;          /* Escurece no hover */
+}
+
+/* Estilos para botões de alerta (vermelho) */
+.btn-remover-veiculo, .btn-remover-manutencao {
+    background-color: var(--cor-alerta);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-remover-veiculo:hover, .btn-remover-manutencao:hover {
+    background-color: #c82333;          /* Escurece no hover */
+}
+
+/* Estilos para botões de navegação/voltar */
+#botaoGaragem, #voltarParaMenu, #voltarParaGaragemCarro,
+#voltarParaGaragemEsportivo, #voltarParaGaragemCaminhao {
+    background-color: var(--cor-secundaria);
+}
+
+#botaoGaragem:hover, #voltarParaMenu:hover, #voltarParaGaragemCarro:hover,
+#voltarParaGaragemEsportivo:hover, #voltarParaGaragemCaminhao:hover {
+    background-color: #5a6268;         /* Escurece no hover */
+}
+
+/* Estilo para o botão de ligar/desligar */
+#ligarDesligarCarro, #ligarDesligarCarroEsportivo, #ligarDesligarCaminhao {
+    background-color: #6c757d;            /* Cor padrão desligado */
+}
+
+#ligarDesligarCarro:hover, #ligarDesligarCarroEsportivo:hover, #ligarDesligarCaminhao:hover{
+    background-color: #5a6268;            /* Cor hover padrão desligado */
+}
+
+/* Adiciona estilo para quando estiver "ligado" */
+button[id*="ligarDesligar"][data-estado="ligado"] { /* Seletor mais específico com o atributo data-estado */
+    background-color: var(--cor-sucesso); /* Cor verde */
+}
+
+button[id*="ligarDesligar"][data-estado="ligado"]:hover {
+    background-color: #1e7e34; /* Escurece no hover */
+}
+
+
+/* ===================================================
+   LISTAS
+   =================================================== */
+
+.lista-manutencao {
+    list-style: none;
+    padding: 0;
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    background-color: white;
+    margin-top: 15px;
+}
+
+.lista-manutencao li {
+    padding: 15px;
+    border-bottom: 1px solid var(--cor-borda);
+    font-size: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.lista-manutencao li:last-child {
+    border-bottom: none;
+}
+
+.lista-manutencao li:nth-child(even) {
+    background-color: var(--cor-fundo);
+}
+
+/* ===================================================
+   RESPONSIVIDADE
+   =================================================== */
+
+@media (max-width: 600px) {
+    /* Adapta o layout para telas menores */
+    #menuPrincipal,
+    #garagem,
+    #informacoesCarro,
+    #informacoesCarroEsportivo,
+    #informacoesCaminhao {
+        width: 100%;                /* Ocupa toda a largura */
+        padding: 20px;
+        margin-top: 10px;
+    }
+
+    form {
+        padding: 15px;
+    }
+
+    label {
+        margin-bottom: 3px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="time"],
+    select,
+    textarea {
+        padding: 10px;
+        font-size: 15px;
+    }
+
+    button {
+        font-size: 15px;
+        padding: 12px 20px;
+    }
+
+    .lista-manutencao li {
+        font-size: 14px;
+        padding: 12px;
+    }
+}
+
+/* ===================================================
+   CLASSES AUXILIARES
+   =================================================== */
+
+.manutencao-section {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--cor-borda);
+    text-align: left;
+}
+
+.form-agendamento {
+    background-color: var(--cor-fundo);
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-agendamento div {
+    display: flex;
+    flex-wrap: wrap;          /* Quebra a linha em telas pequenas */
+    align-items: center;       /* Alinhamento vertical */
+    gap: 8px;
+}
+
+.form-agendamento label {
+    font-weight: bold;
+    color: var(--cor-principal);
+    width: 150px;             /* Largura fixa para labels */
+    text-align: right;          /* Alinha texto à direita */
+}
+
+.form-agendamento input[type="date"],
+.form-agendamento input[type="time"],
+.form-agendamento input[type="text"],
+.form-agendamento input[type="number"],
+.form-agendamento textarea {
+    flex-grow: 1;              /* Ocupa o resto do espaço */
+    padding: 10px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 5px;
+    font-size: 15px;
+    color: var(--cor-texto);
+}
+
+#listaVeiculosGaragem ul {
+    list-style: none;
+    padding: 0;
+}
+
+#listaVeiculosGaragem li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+#listaVeiculosGaragem li:last-child {
+    border-bottom: none;
+}
+
+#listaVeiculosGaragem li span {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+#listaVeiculosGaragem button {
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+/* ===================================================
+   LAYOUT DE DUAS COLUNAS PARA DETALHES DO VEÍCULO
+   =================================================== */
+
+.detalhes-container {
+    display: flex;                /* Cria um container flexível */
+    flex-wrap: wrap;             /* Permite que as colunas quebrem em telas menores */
+    gap: 20px;                   /* Espaçamento entre as colunas */
+    align-items: flex-start;      /* Alinha as colunas no topo */
+}
+
+.veiculo-info {
+    flex: 1;                     /* Ocupa metade do espaço disponível */
+    min-width: 250px;            /* Largura mínima */
+    padding: 20px;               /* Espaçamento interno */
+    border-radius: 8px;           /* Bordas arredondadas */
+    background-color: var(--cor-fundo); /* Cor de fundo */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra suave */
+}
+
+.manutencao-section {
+    flex: 1;                     /* Ocupa a outra metade do espaço */
+    min-width: 300px;            /* Largura mínima */
+    padding: 20px;               /* Espaçamento interno */
+    border-radius: 8px;           /* Bordas arredondadas */
+    background-color: var(--cor-fundo); /* Cor de fundo */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra suave */
+    margin-top: 0;                /* Remove a margem superior */
+    border-top: none;             /* Remove a borda superior */
+    text-align: left;            /* Alinha o texto à esquerda */
+}
+
+/* Otimização para telas menores */
+@media (max-width: 768px) {
+    .detalhes-container {
+        flex-direction: column;    /* Empilha as colunas */
+    }
+
+    .veiculo-info,
+    .manutencao-section {
+        width: 100%;                /* Ocupa toda a largura */
+        min-width: auto;           /* Remove a largura mínima */
+    }
+
+    /* Alinha o texto ao centro em telas menores para melhor visualização */
+    .veiculo-info {
+        text-align: center;
+    }
+}
