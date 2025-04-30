@@ -1,0 +1,27 @@
+[
+  {
+    "id": "v-xxxxxxxxxxxx-xxxxxx",
+    "valorFipe": "R$ 48.500,00",
+    "recallPendente": false,
+    "ultimaRevisaoConcessionaria": "2023-01-15",
+    "dicaManutencao": "Verificar calibragem dos pneus mensalmente.",
+    "componenteComumFalha": "Sistema de arrefecimento (radiador)"
+  },
+  {
+    "id": "v-yyyyyyyyyyyy-yyyyyy",
+    "valorFipe": "R$ 155.200,00",
+    "recallPendente": true,
+    "recallDetalhe": "Atualização do software de controle do turbo.",
+    "ultimaRevisaoConcessionaria": "2022-11-20",
+    "dicaManutencao": "Usar gasolina de alta octanagem para melhor performance.",
+    "componenteComumFalha": "Sensores do turbo"
+  },
+  {
+    "id": "v-zzzzzzzzzzzz-zzzzzz",
+    "valorFipe": "R$ 280.000,00",
+    "recallPendente": false,
+    "ultimaRevisaoConcessionaria": "2023-05-10",
+    "dicaManutencao": "Inspecionar sistema de freios a cada 10.000 km devido ao peso.",
+    "componenteComumFalha": "Sistema de freios (desgaste acelerado)"
+  }
+]

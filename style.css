@@ -31,6 +31,15 @@ h1, h2, h3, h4 {
     margin-bottom: 15px;
 }
 
+/* Adicionado para o título h5 na área da API */
+h5 {
+    color: var(--cor-secundaria);
+    margin-top: 0;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--cor-borda);
+    padding-bottom: 5px;
+}
+
 /* ===================================================
    ESTRUTURA PRINCIPAL
    =================================================== */
@@ -89,6 +98,22 @@ h1, h2, h3, h4 {
     text-align: left;            /* Alinha o texto à esquerda */
 }
 
+/* Estilo opcional para a área da API (complementa inline styles) */
+.detalhes-api-container ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0; /* Remove margem inferior da lista */
+}
+.detalhes-api-container li {
+     margin-bottom: 5px; /* Espaçamento entre itens */
+     font-size: 0.9em; /* Tamanho de fonte menor */
+}
+.detalhes-api-container p {
+    font-size: 0.9em;
+    margin-bottom: 0;
+}
+
+
 /* Otimização para telas menores */
 @media (max-width: 768px) {
     .detalhes-container {
@@ -104,6 +129,10 @@ h1, h2, h3, h4 {
     /* Alinha o texto ao centro em telas menores para melhor visualização */
     .veiculo-info {
         text-align: center;
+    }
+     /* Centraliza a área da API também */
+    .detalhes-api-container {
+        text-align: left; /* Mantém texto da API alinhado à esquerda */
     }
 }
 
@@ -182,7 +211,7 @@ button {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.1s ease;
+    transition: background-color 0.3s ease, transform 0.1s ease, opacity 0.2s ease;
     box-shadow: 0 2px 5px rgba(0,0,0,0.15);
 }
 
@@ -190,6 +219,13 @@ button:hover {
     background-color: #0056b3;          /* Escurece no hover */
     transform: translateY(-1px);       /* Leve elevação */
 }
+
+button:disabled { /* Estilo para botão desabilitado (Carregando...) */
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none; /* Remove elevação */
+}
+
 
 /* Estilos específicos para botões de ação (verde) */
 #acelerarCarro, #frearCarro, #ativarTurbo, #desativarTurbo,
@@ -206,18 +242,41 @@ button:hover {
 
 /* Estilos para botões de alerta (vermelho) */
 .btn-remover-veiculo, .btn-remover-manutencao {
-    background-color: var(--cor-alerta);
-    color: white;
+    background-color: transparent; /* Fundo transparente para ícone */
+    color: var(--cor-alerta);
     border: none;
-    padding: 8px 12px;
+    padding: 0 5px; /* Menor padding */
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: color 0.2s ease;
+    font-size: 1.2em; /* Tamanho do ícone */
+    line-height: 1; /* Alinha melhor o X */
+    box-shadow: none; /* Remove sombra */
 }
 
 .btn-remover-veiculo:hover, .btn-remover-manutencao:hover {
-    background-color: #c82333;          /* Escurece no hover */
+    color: #c82333;          /* Escurece no hover */
+    background-color: transparent; /* Garante que não apareça fundo */
+    transform: none; /* Sem elevação para ícones */
 }
+
+/* Botão Ver Detalhes (azul padrão) */
+.btn-ver-detalhes {
+    /* Usa o estilo padrão do button */
+    padding: 8px 12px; /* Menor padding */
+    font-size: 14px; /* Menor fonte */
+}
+/* Botão Ver Detalhes Extras (cor secundária) */
+.btn-buscar-detalhes-api {
+    background-color: var(--cor-secundaria);
+    padding: 8px 12px; /* Menor padding */
+    font-size: 14px; /* Menor fonte */
+    margin-left: 5px;
+}
+.btn-buscar-detalhes-api:hover {
+     background-color: #5a6268; /* Escurece no hover */
+}
+
 
 /* Estilos para botões de navegação/voltar */
 #botaoGaragem, #voltarParaMenu, #voltarParaGaragemCarro,
@@ -324,6 +383,27 @@ button[id*="ligarDesligar"][data-estado="ligado"]:hover {
         font-size: 14px;
         padding: 12px;
     }
+
+    /* Ajusta botões na lista da garagem em telas pequenas */
+    #listaVeiculosGaragem li {
+        flex-direction: column; /* Empilha texto e botões */
+        align-items: flex-start; /* Alinha à esquerda */
+        gap: 5px; /* Espaço entre texto e botões */
+    }
+     #listaVeiculosGaragem li div { /* Container dos botões */
+        width: 100%;
+        display: flex;
+        justify-content: flex-start; /* Alinha botões à esquerda */
+        gap: 5px; /* Espaço entre botões */
+    }
+    #listaVeiculosGaragem button {
+        padding: 6px 10px; /* Botões menores */
+        font-size: 13px;
+    }
+    .btn-remover-veiculo {
+        margin-left: auto; /* Empurra o botão de remover para a direita */
+        padding: 0 5px; /* Mantém padding do ícone */
+    }
 }
 
 /* ===================================================
@@ -331,10 +411,7 @@ button[id*="ligarDesligar"][data-estado="ligado"]:hover {
    =================================================== */
 
 .manutencao-section {
-    margin-top: 25px;
-    padding-top: 20px;
-    border-top: 1px dashed var(--cor-borda);
-    text-align: left;
+    /* Já definido acima */
 }
 
 .form-agendamento {
@@ -358,6 +435,7 @@ button[id*="ligarDesligar"][data-estado="ligado"]:hover {
     color: var(--cor-principal);
     width: 150px;             /* Largura fixa para labels */
     text-align: right;          /* Alinha texto à direita */
+    flex-shrink: 0; /* Evita que o label encolha */
 }
 
 .form-agendamento input[type="date"],
@@ -372,6 +450,21 @@ button[id*="ligarDesligar"][data-estado="ligado"]:hover {
     font-size: 15px;
     color: var(--cor-texto);
 }
+
+/* Ajuste para label e input em telas menores no form de agendamento */
+@media (max-width: 600px) {
+     .form-agendamento div {
+         flex-direction: column;
+         align-items: stretch; /* Estica elementos na vertical */
+         gap: 5px;
+     }
+     .form-agendamento label {
+         width: auto; /* Largura automática */
+         text-align: left; /* Alinha à esquerda */
+         margin-bottom: 2px; /* Menor espaço */
+     }
+}
+
 
 #listaVeiculosGaragem ul {
     list-style: none;
@@ -396,56 +489,5 @@ button[id*="ligarDesligar"][data-estado="ligado"]:hover {
 }
 
 #listaVeiculosGaragem button {
-    padding: 8px 12px;
-    font-size: 14px;
-}
-
-/* ===================================================
-   LAYOUT DE DUAS COLUNAS PARA DETALHES DO VEÍCULO
-   =================================================== */
-
-.detalhes-container {
-    display: flex;                /* Cria um container flexível */
-    flex-wrap: wrap;             /* Permite que as colunas quebrem em telas menores */
-    gap: 20px;                   /* Espaçamento entre as colunas */
-    align-items: flex-start;      /* Alinha as colunas no topo */
-}
-
-.veiculo-info {
-    flex: 1;                     /* Ocupa metade do espaço disponível */
-    min-width: 250px;            /* Largura mínima */
-    padding: 20px;               /* Espaçamento interno */
-    border-radius: 8px;           /* Bordas arredondadas */
-    background-color: var(--cor-fundo); /* Cor de fundo */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra suave */
-}
-
-.manutencao-section {
-    flex: 1;                     /* Ocupa a outra metade do espaço */
-    min-width: 300px;            /* Largura mínima */
-    padding: 20px;               /* Espaçamento interno */
-    border-radius: 8px;           /* Bordas arredondadas */
-    background-color: var(--cor-fundo); /* Cor de fundo */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra suave */
-    margin-top: 0;                /* Remove a margem superior */
-    border-top: none;             /* Remove a borda superior */
-    text-align: left;            /* Alinha o texto à esquerda */
-}
-
-/* Otimização para telas menores */
-@media (max-width: 768px) {
-    .detalhes-container {
-        flex-direction: column;    /* Empilha as colunas */
-    }
-
-    .veiculo-info,
-    .manutencao-section {
-        width: 100%;                /* Ocupa toda a largura */
-        min-width: auto;           /* Remove a largura mínima */
-    }
-
-    /* Alinha o texto ao centro em telas menores para melhor visualização */
-    .veiculo-info {
-        text-align: center;
-    }
+     /* Estilos definidos na seção BOTÕES e RESPONSIVIDADE */
 }

@@ -24,6 +24,19 @@
         <!-- Lista de Veículos (Preenchida pelo JS) -->
         <div id="listaVeiculosGaragem">
             <p>Nenhum veículo na garagem.</p>
+            <!-- Exemplo de como a lista será preenchida (removido no JS) -->
+            <!--
+            <ul>
+                <li>
+                    <span>Carro Comum: Fusca (Azul)</span>
+                    <div>
+                        <button class="btn-ver-detalhes" data-veiculo-id="...">Ver Detalhes</button>
+                        <button class="btn-buscar-detalhes-api" data-veiculo-id="..." style="margin-left: 5px;">Ver Detalhes Extras</button>
+                        <button class="btn-remover-veiculo" data-veiculo-id="..." title="Remover Veículo" style="color: red; margin-left: 10px; border: none; background: none; cursor: pointer; font-size: 1.2em;">×</button>
+                    </div>
+                </li>
+            </ul>
+            -->
         </div>
         <hr>
 
@@ -72,6 +85,15 @@
                 <p>Cor: <span id="corCarro"></span></p>
                 <p>Velocidade: <span id="velocidadeCarro">0</span> km/h</p>
                 <p>Status: <span id="statusCarro">Desligado</span></p>
+
+                <!-- ===== ÁREA PARA DETALHES DA API (CARRO) ===== -->
+                <div class="detalhes-api-container" style="margin-top: 15px; margin-bottom:15px; padding: 10px; background-color: #e9ecef; border-radius: 5px; border: 1px solid #ced4da;">
+                    <h5>Detalhes Extras (Simulado)</h5>
+                    <div id="detalhesApiCarro">
+                        <p style="font-style: italic; color: #6c757d;">Clique em "Ver Detalhes Extras" na garagem para carregar.</p>
+                    </div>
+                </div>
+                <!-- =========================================== -->
 
                 <!-- Botões de Ação com data-veiculo-id -->
                 <button id="ligarDesligarCarro" data-veiculo-id="">Ligar/Desligar</button>
@@ -138,6 +160,15 @@
                 <p>Velocidade: <span id="velocidadeCarroEsportivo">0</span> km/h</p>
                 <p>Status: <span id="statusCarroEsportivo">Desligado</span></p>
                 <p>Turbo: <span id="turboCarroEsportivo">Desativado</span></p>
+
+                 <!-- ===== ÁREA PARA DETALHES DA API (ESPORTIVO) ===== -->
+                <div class="detalhes-api-container" style="margin-top: 15px; margin-bottom:15px; padding: 10px; background-color: #e9ecef; border-radius: 5px; border: 1px solid #ced4da;">
+                    <h5>Detalhes Extras (Simulado)</h5>
+                    <div id="detalhesApiCarroEsportivo">
+                        <p style="font-style: italic; color: #6c757d;">Clique em "Ver Detalhes Extras" na garagem para carregar.</p>
+                    </div>
+                </div>
+                <!-- =============================================== -->
 
                 <!-- Botões de Ação com data-veiculo-id -->
                 <button id="ligarDesligarCarroEsportivo" data-veiculo-id="">Ligar/Desligar</button>
@@ -206,6 +237,15 @@
                 <p>Velocidade: <span id="velocidadeCaminhao">0</span> km/h</p>
                 <p>Capacidade de Carga: <span id="capacidadeCargaCaminhao"></span> kg</p>
                 <p>Carga Atual: <span id="cargaAtualCaminhao">0</span> kg</p>
+
+                <!-- ===== ÁREA PARA DETALHES DA API (CAMINHÃO) ===== -->
+                <div class="detalhes-api-container" style="margin-top: 15px; margin-bottom:15px; padding: 10px; background-color: #e9ecef; border-radius: 5px; border: 1px solid #ced4da;">
+                    <h5>Detalhes Extras (Simulado)</h5>
+                    <div id="detalhesApiCaminhao">
+                        <p style="font-style: italic; color: #6c757d;">Clique em "Ver Detalhes Extras" na garagem para carregar.</p>
+                    </div>
+                </div>
+                <!-- ============================================ -->
 
                 <!-- Controles de Carga -->
                 <div>
