@@ -4,156 +4,142 @@
 
 /* Paleta de Cores */
 :root {
-    --cor-fundo: #f8f9fa;          /* Off-white */
-    --cor-principal: #343a40;       /* Cinza escuro */
-    --cor-secundaria: #6c757d;      /* Cinza */
-    --cor-destaque: #007bff;        /* Azul */
-    --cor-sucesso: #28a745;         /* Verde */
-    --cor-alerta: #dc3545;          /* Vermelho */
-    --cor-texto: #212529;           /* Preto quase */
-    --cor-borda: #ced4da;           /* Cinza claro */
+    --cor-fundo: #f8f9fa;
+    --cor-principal: #343a40;
+    --cor-secundaria: #6c757d;
+    --cor-destaque: #007bff;
+    --cor-sucesso: #28a745;
+    --cor-alerta: #dc3545;
+    --cor-texto: #212529;
+    --cor-borda: #ced4da;
+    --cor-fundo-card: #ffffff;
+    --cor-sombra: rgba(0,0,0,0.1);
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fonte mais moderna */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--cor-fundo);
     color: var(--cor-texto);
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    line-height: 1.6;               /* Melhora a legibilidade */
+    line-height: 1.6;
+    margin: 0;
+    min-height: 100vh;
 }
 
 h1, h2, h3, h4 {
     color: var(--cor-principal);
     text-align: center;
-    margin-bottom: 15px;
+    margin-top: 0;
+    margin-bottom: 20px;
 }
 
-/* Adicionado para o título h5 na área da API */
-h5 {
+h1 { font-size: 2.2em; }
+h2 { font-size: 1.8em; }
+h3 { font-size: 1.4em; margin-top: 25px; }
+h4 { font-size: 1.1em; color: var(--cor-secundaria); margin-top: 20px; margin-bottom: 10px; }
+
+h5 { /* Detalhes Extras (Simulado) */
     color: var(--cor-secundaria);
     margin-top: 0;
     margin-bottom: 10px;
     border-bottom: 1px solid var(--cor-borda);
     padding-bottom: 5px;
+    font-size: 1em;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid var(--cor-borda);
+    margin: 30px 0;
 }
 
 /* ===================================================
-   ESTRUTURA PRINCIPAL
+   ESTRUTURA PRINCIPAL (TELAS)
    =================================================== */
-
 #menuPrincipal,
 #garagem,
 #informacoesCarro,
 #informacoesCarroEsportivo,
 #informacoesCaminhao {
-    display: none;                  /* Esconde inicialmente */
+    display: none;
     margin-top: 20px;
-    padding: 30px;                  /* Aumenta o espaço interno */
+    padding: 25px;
     width: 90%;
-    max-width: 700px;               /* Limita a largura */
+    max-width: 800px;
     box-sizing: border-box;
-    background-color: white;       /* Fundo branco para contraste */
-    border-radius: 10px;            /* Bordas arredondadas */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Sombra suave */
-    text-align: left;               /* Alinha texto à esquerda */
+    background-color: var(--cor-fundo-card);
+    border-radius: 12px;
+    box-shadow: 0 6px 18px var(--cor-sombra);
+    text-align: left;
 }
 
 #menuPrincipal {
-    text-align: center;
-    margin-bottom: 30px;
+    text-align: center; /* Para centralizar o botão e a seção de clima */
 }
 
 /* ===================================================
    LAYOUT DE DUAS COLUNAS PARA DETALHES DO VEÍCULO
    =================================================== */
-
 .detalhes-container {
-    display: flex;                /* Cria um container flexível */
-    flex-wrap: wrap;             /* Permite que as colunas quebrem em telas menores */
-    gap: 20px;                   /* Espaçamento entre as colunas */
-    align-items: flex-start;      /* Alinha as colunas no topo */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    align-items: flex-start;
 }
 
-.veiculo-info {
-    flex: 1;                     /* Ocupa metade do espaço disponível */
-    min-width: 250px;            /* Largura mínima */
-    padding: 20px;               /* Espaçamento interno */
-    border-radius: 8px;           /* Bordas arredondadas */
-    background-color: var(--cor-fundo); /* Cor de fundo */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra suave */
-}
-
+.veiculo-info,
 .manutencao-section {
-    flex: 1;                     /* Ocupa a outra metade do espaço */
-    min-width: 300px;            /* Largura mínima */
-    padding: 20px;               /* Espaçamento interno */
-    border-radius: 8px;           /* Bordas arredondadas */
-    background-color: var(--cor-fundo); /* Cor de fundo */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra suave */
-    margin-top: 0;                /* Remove a margem superior */
-    border-top: none;             /* Remove a borda superior */
-    text-align: left;            /* Alinha o texto à esquerda */
+    flex: 1;
+    min-width: 300px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: var(--cor-fundo); /* Um fundo levemente diferente para destacar */
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.06);
 }
 
-/* Estilo opcional para a área da API (complementa inline styles) */
-.detalhes-api-container ul {
-    list-style: none;
-    padding-left: 0;
-    margin-bottom: 0; /* Remove margem inferior da lista */
-}
-.detalhes-api-container li {
-     margin-bottom: 5px; /* Espaçamento entre itens */
-     font-size: 0.9em; /* Tamanho de fonte menor */
-}
-.detalhes-api-container p {
-    font-size: 0.9em;
-    margin-bottom: 0;
+.veiculo-info img {
+    display: block;
+    margin: 0 auto 15px auto;
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
 }
 
-
-/* Otimização para telas menores */
-@media (max-width: 768px) {
-    .detalhes-container {
-        flex-direction: column;    /* Empilha as colunas */
-    }
-
-    .veiculo-info,
-    .manutencao-section {
-        width: 100%;                /* Ocupa toda a largura */
-        min-width: auto;           /* Remove a largura mínima */
-    }
-
-    /* Alinha o texto ao centro em telas menores para melhor visualização */
-    .veiculo-info {
-        text-align: center;
-    }
-     /* Centraliza a área da API também */
-    .detalhes-api-container {
-        text-align: left; /* Mantém texto da API alinhado à esquerda */
-    }
+.detalhes-api-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #eef1f5;
+    border-radius: 6px;
+    border: 1px solid #d8dde4;
 }
+
+.detalhes-api-container ul { list-style: none; padding-left: 0; margin-bottom: 0; }
+.detalhes-api-container li { margin-bottom: 8px; font-size: 0.9em; line-height: 1.5; }
+.detalhes-api-container p { font-size: 0.9em; margin-bottom: 0; color: var(--cor-secundaria); }
+
 
 /* ===================================================
    FORMULÁRIOS
    =================================================== */
-
 form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    padding: 20px;
+    gap: 18px;
+    padding: 20px; /* Reduzido para formulários internos */
     background-color: var(--cor-fundo);
     border-radius: 8px;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); /* Sombra interna */
+    /* box-shadow: inset 0 1px 4px rgba(0,0,0,0.04); Removido para um visual mais flat dentro dos cards */
 }
 
 label {
-    font-weight: bold;
+    font-weight: 600;
     color: var(--cor-principal);
-    margin-bottom: 5px;
+    margin-bottom: 3px;
+    font-size: 0.95em;
 }
 
 input[type="text"],
@@ -162,13 +148,15 @@ input[type="date"],
 input[type="time"],
 select,
 textarea {
-    padding: 12px;
+    padding: 10px 12px; /* Ajuste de padding */
     border: 1px solid var(--cor-borda);
     border-radius: 6px;
-    font-size: 16px;
+    font-size: 1rem;
     color: var(--cor-texto);
     background-color: white;
-    transition: border-color 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 input[type="text"]:focus,
@@ -178,316 +166,278 @@ input[type="time"]:focus,
 select:focus,
 textarea:focus {
     border-color: var(--cor-destaque);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     outline: none;
 }
 
-textarea {
-    resize: vertical;
-    min-height: 100px;
-}
+textarea { resize: vertical; min-height: 70px; }
 
-/* Estilo específico para o select de tipo de veículo */
 select {
     cursor: pointer;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236c757d%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 10px auto;
+    padding-right: 35px;
 }
 
-/* Estilo específico para a área de capacidade do caminhão */
-#campoCapacidadeCaminhao {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+#campoCapacidadeCaminhao { display: flex; align-items: center; gap: 10px; }
+#campoCapacidadeCaminhao label { margin-bottom: 0; white-space: nowrap; }
+.controles-carga { display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0; align-items: center; }
+.controles-carga label { margin-bottom: 0; }
+.controles-carga input[type="number"] { width: auto; flex-grow: 1; min-width: 80px; }
+.controles-carga button { flex-grow: 1; }
+
 
 /* ===================================================
    BOTÕES
    =================================================== */
-
 button {
-    padding: 14px 25px;
-    font-size: 16px;
-    font-weight: 600;
+    padding: 10px 20px; /* Padding padrão para botões */
+    font-size: 1rem;
+    font-weight: 500;
     color: white;
     background-color: var(--cor-destaque);
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.1s ease, opacity 0.2s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.07);
+    text-align: center;
+    display: inline-block;
+    line-height: 1.5;
 }
+button:hover { background-color: #0069d9; transform: translateY(-1px); }
+button:active { transform: translateY(0px); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+button:disabled { background-color: #b0c4de; cursor: not-allowed; transform: none; box-shadow: none; }
 
-button:hover {
-    background-color: #0056b3;          /* Escurece no hover */
-    transform: translateY(-1px);       /* Leve elevação */
-}
-
-button:disabled { /* Estilo para botão desabilitado (Carregando...) */
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none; /* Remove elevação */
-}
-
-
-/* Estilos específicos para botões de ação (verde) */
-#acelerarCarro, #frearCarro, #ativarTurbo, #desativarTurbo,
-#acelerarCarroEsportivo, #frearCarroEsportivo, #carregarCaminhao, #descarregarCaminhao,
-#acelerarCaminhao, #frearCaminhao{
+/* Botões de ação do veículo */
+button[id*="Acelerar"], button[id*="Frear"], button[id*="AtivarTurbo"], button[id*="DesativarTurbo"],
+button[id*="Carregar"], button[id*="Descarregar"] {
     background-color: var(--cor-sucesso);
 }
-
-#acelerarCarro:hover, #frearCarro:hover, #ativarTurbo:hover, #desativarTurbo:hover,
-#acelerarCarroEsportivo:hover, #frearCarroEsportivo:hover, #carregarCaminhao:hover, #descarregarCaminhao:hover,
-#acelerarCaminhao:hover, #frearCaminhao:hover {
-    background-color: #1e7e34;          /* Escurece no hover */
+button[id*="Acelerar"]:hover, button[id*="Frear"]:hover, button[id*="AtivarTurbo"]:hover, button[id*="DesativarTurbo"]:hover,
+button[id*="Carregar"]:hover, button[id*="Descarregar"]:hover {
+    background-color: #1e7e34;
 }
 
-/* Estilos para botões de alerta (vermelho) */
-.btn-remover-veiculo, .btn-remover-manutencao {
-    background-color: transparent; /* Fundo transparente para ícone */
-    color: var(--cor-alerta);
-    border: none;
-    padding: 0 5px; /* Menor padding */
-    border-radius: 5px;
-    cursor: pointer;
-    transition: color 0.2s ease;
-    font-size: 1.2em; /* Tamanho do ícone */
-    line-height: 1; /* Alinha melhor o X */
-    box-shadow: none; /* Remove sombra */
-}
+/* Botão Ligar/Desligar */
+button[id*="ligarDesligar"] { background-color: var(--cor-secundaria); }
+button[id*="ligarDesligar"]:hover { background-color: #5a6268; }
+button[id*="ligarDesligar"][data-estado="ligado"] { background-color: var(--cor-sucesso); }
+button[id*="ligarDesligar"][data-estado="ligado"]:hover { background-color: #1e7e34; }
 
-.btn-remover-veiculo:hover, .btn-remover-manutencao:hover {
-    color: #c82333;          /* Escurece no hover */
-    background-color: transparent; /* Garante que não apareça fundo */
-    transform: none; /* Sem elevação para ícones */
+/* Botões de navegação/voltar e acesso */
+#botaoGaragem, button[id*="voltarPara"], #voltarParaMenuPrincipalGaragem {
+    background-color: var(--cor-principal); /* Cor mais escura para navegação principal */
+    margin-top: 10px; /* Espaço acima dos botões de voltar */
 }
+#botaoGaragem:hover, button[id*="voltarPara"]:hover, #voltarParaMenuPrincipalGaragem:hover {
+    background-color: #23272b;
+}
+#botaoGaragem { font-size: 1.1em; padding: 12px 25px; } /* Botão principal maior */
 
-/* Botão Ver Detalhes (azul padrão) */
-.btn-ver-detalhes {
-    /* Usa o estilo padrão do button */
-    padding: 8px 12px; /* Menor padding */
-    font-size: 14px; /* Menor fonte */
-}
-/* Botão Ver Detalhes Extras (cor secundária) */
-.btn-buscar-detalhes-api {
-    background-color: var(--cor-secundaria);
-    padding: 8px 12px; /* Menor padding */
-    font-size: 14px; /* Menor fonte */
+
+/* Botões na lista de veículos da garagem */
+#listaVeiculosGaragem .btn-ver-detalhes,
+#listaVeiculosGaragem .btn-buscar-detalhes-api {
+    padding: 6px 12px;
+    font-size: 0.85em;
     margin-left: 5px;
 }
-.btn-buscar-detalhes-api:hover {
-     background-color: #5a6268; /* Escurece no hover */
+#listaVeiculosGaragem .btn-buscar-detalhes-api { background-color: var(--cor-secundaria); }
+#listaVeiculosGaragem .btn-buscar-detalhes-api:hover { background-color: #5a6268; }
+
+.btn-remover-veiculo, .btn-remover-manutencao {
+    background-color: transparent;
+    color: var(--cor-alerta);
+    border: none;
+    padding: 0 5px;
+    border-radius: 50%; /* Círculo para ícone X */
+    cursor: pointer;
+    transition: color 0.2s, background-color 0.2s;
+    font-size: 1.3em; /* Ícone X maior */
+    line-height: 1;
+    box-shadow: none;
+    margin-left: auto; /* Empurra para a direita na lista de manutenção */
 }
-
-
-/* Estilos para botões de navegação/voltar */
-#botaoGaragem, #voltarParaMenu, #voltarParaGaragemCarro,
-#voltarParaGaragemEsportivo, #voltarParaGaragemCaminhao {
-    background-color: var(--cor-secundaria);
+.btn-remover-veiculo:hover, .btn-remover-manutencao:hover {
+    color: white;
+    background-color: var(--cor-alerta);
 }
-
-#botaoGaragem:hover, #voltarParaMenu:hover, #voltarParaGaragemCarro:hover,
-#voltarParaGaragemEsportivo:hover, #voltarParaGaragemCaminhao:hover {
-    background-color: #5a6268;         /* Escurece no hover */
+#listaVeiculosGaragem .btn-remover-veiculo {
+    margin-left: 10px; /* Espaço na lista de veículos */
 }
-
-/* Estilo para o botão de ligar/desligar */
-#ligarDesligarCarro, #ligarDesligarCarroEsportivo, #ligarDesligarCaminhao {
-    background-color: #6c757d;            /* Cor padrão desligado */
-}
-
-#ligarDesligarCarro:hover, #ligarDesligarCarroEsportivo:hover, #ligarDesligarCaminhao:hover{
-    background-color: #5a6268;            /* Cor hover padrão desligado */
-}
-
-/* Adiciona estilo para quando estiver "ligado" */
-button[id*="ligarDesligar"][data-estado="ligado"] { /* Seletor mais específico com o atributo data-estado */
-    background-color: var(--cor-sucesso); /* Cor verde */
-}
-
-button[id*="ligarDesligar"][data-estado="ligado"]:hover {
-    background-color: #1e7e34; /* Escurece no hover */
-}
-
 
 /* ===================================================
-   LISTAS
+   LISTAS (Garagem e Manutenção)
    =================================================== */
-
+#listaVeiculosGaragem ul,
 .lista-manutencao {
     list-style: none;
     padding: 0;
-    max-height: 250px;
-    overflow-y: auto;
+    margin-top: 10px;
     border: 1px solid var(--cor-borda);
     border-radius: 8px;
-    background-color: white;
-    margin-top: 15px;
+    background-color: white; /* Fundo branco para listas */
 }
+.lista-manutencao { max-height: 200px; overflow-y: auto; }
 
+#listaVeiculosGaragem li,
 .lista-manutencao li {
-    padding: 15px;
+    padding: 12px 15px;
     border-bottom: 1px solid var(--cor-borda);
-    font-size: 15px;
+    font-size: 0.95em;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px; /* Espaço entre o texto e os botões/ícones */
 }
+#listaVeiculosGaragem li:last-child,
+.lista-manutencao li:last-child { border-bottom: none; }
 
-.lista-manutencao li:last-child {
-    border-bottom: none;
-}
-
-.lista-manutencao li:nth-child(even) {
-    background-color: var(--cor-fundo);
-}
+#listaVeiculosGaragem li span { flex-grow: 1; }
+#listaVeiculosGaragem li div { display: flex; align-items: center; } /* Container dos botões na lista */
 
 /* ===================================================
-   RESPONSIVIDADE
+   SEÇÃO DE PREVISÃO DO TEMPO (NOVA)
    =================================================== */
-
-@media (max-width: 600px) {
-    /* Adapta o layout para telas menores */
-    #menuPrincipal,
-    #garagem,
-    #informacoesCarro,
-    #informacoesCarroEsportivo,
-    #informacoesCaminhao {
-        width: 100%;                /* Ocupa toda a largura */
-        padding: 20px;
-        margin-top: 10px;
-    }
-
-    form {
-        padding: 15px;
-    }
-
-    label {
-        margin-bottom: 3px;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="date"],
-    input[type="time"],
-    select,
-    textarea {
-        padding: 10px;
-        font-size: 15px;
-    }
-
-    button {
-        font-size: 15px;
-        padding: 12px 20px;
-    }
-
-    .lista-manutencao li {
-        font-size: 14px;
-        padding: 12px;
-    }
-
-    /* Ajusta botões na lista da garagem em telas pequenas */
-    #listaVeiculosGaragem li {
-        flex-direction: column; /* Empilha texto e botões */
-        align-items: flex-start; /* Alinha à esquerda */
-        gap: 5px; /* Espaço entre texto e botões */
-    }
-     #listaVeiculosGaragem li div { /* Container dos botões */
-        width: 100%;
-        display: flex;
-        justify-content: flex-start; /* Alinha botões à esquerda */
-        gap: 5px; /* Espaço entre botões */
-    }
-    #listaVeiculosGaragem button {
-        padding: 6px 10px; /* Botões menores */
-        font-size: 13px;
-    }
-    .btn-remover-veiculo {
-        margin-left: auto; /* Empurra o botão de remover para a direita */
-        padding: 0 5px; /* Mantém padding do ícone */
-    }
+.weather-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--cor-borda);
+}
+.weather-input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    align-items: center; /* Alinha input e botão */
+}
+.weather-input-group input[type="text"] {
+    flex-grow: 1; /* Input ocupa mais espaço */
+}
+.weather-input-group button {
+    flex-shrink: 0; /* Botão não encolhe */
+    background-color: var(--cor-principal); /* Cor diferente para o botão de clima */
+}
+.weather-input-group button:hover {
+    background-color: #23272b;
 }
 
-/* ===================================================
-   CLASSES AUXILIARES
-   =================================================== */
-
-.manutencao-section {
-    /* Já definido acima */
+.weather-status {
+    text-align: center;
+    margin-top: 10px;
+    font-style: italic;
+    color: var(--cor-secundaria);
+    min-height: 1.6em; /* Para evitar pulo de layout */
 }
 
-.form-agendamento {
+.previsao-container { /* Container para os cards de previsão diária */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.dia-previsao { /* Card para cada dia da previsão */
     background-color: var(--cor-fundo);
-    padding: 20px;
+    border: 1px solid var(--cor-borda);
     border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    padding: 15px;
+    width: calc(33.333% - 20px); /* Tenta 3 por linha, ajustando o gap */
+    min-width: 160px; /* Largura mínima */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+.dia-previsao:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+.dia-previsao h4 { /* Data */
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1em;
+    color: var(--cor-principal);
+}
+.dia-previsao img { /* Ícone do tempo */
+    width: 50px;
+    height: 50px;
+    margin-bottom: 8px;
+}
+.dia-previsao .temperaturas { font-size: 0.95em; margin-bottom: 8px; }
+.dia-previsao .temperaturas .temp-max { font-weight: bold; color: #c9302c; /* Tom de vermelho */ }
+.dia-previsao .temperaturas .temp-min { color: #46b8da; /* Tom de azul */ }
+.dia-previsao .descricao-tempo { font-size: 0.85em; color: var(--cor-secundaria); min-height: 2.5em; /* Para alinhar verticalmente */ }
 
-.form-agendamento div {
+/* ===================================================
+   FORMULÁRIO DE AGENDAMENTO (Dentro de .manutencao-section)
+   =================================================== */
+.form-agendamento div { /* Container para label+input no form de agendamento */
     display: flex;
-    flex-wrap: wrap;          /* Quebra a linha em telas pequenas */
-    align-items: center;       /* Alinhamento vertical */
+    flex-wrap: wrap;
+    align-items: center;
     gap: 8px;
 }
-
 .form-agendamento label {
-    font-weight: bold;
-    color: var(--cor-principal);
-    width: 150px;             /* Largura fixa para labels */
-    text-align: right;          /* Alinha texto à direita */
-    flex-shrink: 0; /* Evita que o label encolha */
+    width: 130px; /* Largura fixa para labels nos agendamentos */
+    text-align: right;
+    flex-shrink: 0;
+    margin-bottom: 0; /* Já tem gap no div pai */
 }
-
-.form-agendamento input[type="date"],
-.form-agendamento input[type="time"],
-.form-agendamento input[type="text"],
-.form-agendamento input[type="number"],
-.form-agendamento textarea {
-    flex-grow: 1;              /* Ocupa o resto do espaço */
-    padding: 10px;
-    border: 1px solid var(--cor-borda);
-    border-radius: 5px;
-    font-size: 15px;
-    color: var(--cor-texto);
-}
-
-/* Ajuste para label e input em telas menores no form de agendamento */
-@media (max-width: 600px) {
-     .form-agendamento div {
-         flex-direction: column;
-         align-items: stretch; /* Estica elementos na vertical */
-         gap: 5px;
-     }
-     .form-agendamento label {
-         width: auto; /* Largura automática */
-         text-align: left; /* Alinha à esquerda */
-         margin-bottom: 2px; /* Menor espaço */
-     }
-}
-
-
-#listaVeiculosGaragem ul {
-    list-style: none;
-    padding: 0;
-}
-
-#listaVeiculosGaragem li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid var(--cor-borda);
-}
-
-#listaVeiculosGaragem li:last-child {
-    border-bottom: none;
-}
-
-#listaVeiculosGaragem li span {
+.form-agendamento input, .form-agendamento textarea {
     flex-grow: 1;
-    margin-right: 10px;
 }
 
-#listaVeiculosGaragem button {
-     /* Estilos definidos na seção BOTÕES e RESPONSIVIDADE */
+/* ===================================================
+   RESPONSIVIDADE GERAL
+   =================================================== */
+@media (max-width: 768px) {
+    .detalhes-container { flex-direction: column; }
+    .veiculo-info, .manutencao-section { width: 100%; min-width: auto; }
+    .veiculo-info { text-align: center; }
+    .detalhes-api-container { text-align: left; }
+
+    #listaVeiculosGaragem li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    #listaVeiculosGaragem li div { width: 100%; justify-content: flex-start; }
+    #listaVeiculosGaragem .btn-remover-veiculo { margin-left: auto; } /* Mantém na direita */
+
+    .form-agendamento div { flex-direction: column; align-items: stretch; }
+    .form-agendamento label { width: auto; text-align: left; margin-bottom: 2px; }
+
+    .weather-input-group { flex-direction: column; }
+    .weather-input-group input[type="text"], .weather-input-group button { width: 100%; }
+
+    .dia-previsao {
+        width: calc(50% - 15px); /* 2 cards por linha em tablets */
+    }
 }
+
+@media (max-width: 500px) {
+    h1 { font-size: 1.8em; }
+    h2 { font-size: 1.5em; }
+    h3 { font-size: 1.2em; }
+
+    #menuPrincipal, #garagem, #informacoesCarro, #informacoesCarroEsportivo, #informacoesCaminhao {
+        padding: 15px; /* Menos padding em telas pequenas */
+    }
+    form { padding: 15px; }
+    label { font-size: 0.9em; }
+    input, select, textarea, button { font-size: 0.95rem; }
+    button { padding: 8px 15px; }
+    #botaoGaragem { font-size: 1em; padding: 10px 20px; }
+
+    .controles-carga { flex-direction: column; align-items: stretch; }
+    .controles-carga input[type="number"] { width: 100%; }
+
+    .dia-previsao {
+        width: 100%; /* 1 card por linha em celulares */
+        min-width: unset;
+    }
+}   

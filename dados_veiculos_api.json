@@ -1,0 +1,29 @@
+[
+    {
+      "id": "v-1746616622369-17d886",
+      "valorFipe": "R$ 22.000,00",
+      "recallPendente": false,
+      "recallDetalhe": null,
+      "ultimaRevisaoConcessionaria": "15/03/2023 - 30.000km",
+      "dicaManutencao": "Verificar nível do óleo a cada 5.000km para Fuscas.",
+      "componenteComumFalha": "Sistema de ignição em modelos mais antigos de Fusca."
+    },
+    {
+      "id": "v-1746616622369-17d886",
+      "valorFipe": "R$ 1.250.000,00",
+      "recallPendente": true,
+      "recallDetalhe": "Verificar fixação do aerofólio traseiro (Recall FER-001)",
+      "ultimaRevisaoConcessionaria": "01/07/2023 - Revisão de entrega",
+      "dicaManutencao": "Manter pneus calibrados conforme especificação para alta performance.",
+      "componenteComumFalha": "Desgaste prematuro das pastilhas de freio em uso esportivo intenso."
+    },
+    {
+      "id": "ID_DO_SEU_SCANIA_BRANCO_AQUI",
+      "valorFipe": "R$ 380.000,00",
+      "recallPendente": false,
+      "recallDetalhe": null,
+      "ultimaRevisaoConcessionaria": "10/01/2024 - Troca de filtros e fluidos do Scania",
+      "dicaManutencao": "Lubrificar quinta roda regularmente para caminhões Scania.",
+      "componenteComumFalha": "Sistema de freios pneumáticos requer inspeção periódica em caminhões."
+    }
+  ]

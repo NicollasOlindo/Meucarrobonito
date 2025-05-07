@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Garagem Inteligente</title>
-    <link rel="stylesheet" href="style.css"> <!-- Certifique-se que seu CSS está atualizado -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- ==========================
@@ -13,6 +13,19 @@
     <div id="menuPrincipal">
         <h1>Minha Garagem Inteligente</h1>
         <button id="botaoGaragem">Acessar Garagem</button>
+        <hr>
+        <!-- Seção de Previsão do Tempo Detalhada -->
+        <div class="weather-section">
+            <h2>Previsão do Tempo Detalhada</h2>
+            <div class="weather-input-group">
+                <input type="text" id="cidade-input" placeholder="Digite o nome da cidade">
+                <button id="verificar-clima-detalhado-btn">Ver Previsão Detalhada</button>
+            </div>
+            <div id="previsao-detalhada-status" class="weather-status"></div>
+            <div id="previsao-detalhada-resultado" class="previsao-container">
+                <!-- Resultados da previsão serão inseridos aqui pelo JavaScript -->
+            </div>
+        </div>
     </div>
 
     <!-- ==========================
@@ -21,26 +34,11 @@
     <div id="garagem" style="display: none;">
         <h2>Garagem</h2>
 
-        <!-- Lista de Veículos (Preenchida pelo JS) -->
         <div id="listaVeiculosGaragem">
             <p>Nenhum veículo na garagem.</p>
-            <!-- Exemplo de como a lista será preenchida (removido no JS) -->
-            <!--
-            <ul>
-                <li>
-                    <span>Carro Comum: Fusca (Azul)</span>
-                    <div>
-                        <button class="btn-ver-detalhes" data-veiculo-id="...">Ver Detalhes</button>
-                        <button class="btn-buscar-detalhes-api" data-veiculo-id="..." style="margin-left: 5px;">Ver Detalhes Extras</button>
-                        <button class="btn-remover-veiculo" data-veiculo-id="..." title="Remover Veículo" style="color: red; margin-left: 10px; border: none; background: none; cursor: pointer; font-size: 1.2em;">×</button>
-                    </div>
-                </li>
-            </ul>
-            -->
         </div>
         <hr>
 
-        <!-- Formulário para Adicionar Novo Veículo -->
         <h3>Adicionar Novo Veículo</h3>
         <form id="formAdicionarVeiculo">
             <label for="tipoNovoVeiculo">Tipo:</label>
@@ -56,7 +54,6 @@
             <label for="corNovoVeiculo">Cor:</label>
             <input type="text" id="corNovoVeiculo" required placeholder="Ex: Azul">
 
-            <!-- Campo adicional para Caminhão (Controlado pelo JS) -->
             <div id="campoCapacidadeCaminhao" style="display:none;">
                 <label for="capacidadeNovoCaminhao">Capacidade Carga (kg):</label>
                 <input type="number" id="capacidadeNovoCaminhao" min="1" value="10000">
@@ -66,7 +63,7 @@
         </form>
         <hr>
 
-        <button id="voltarParaMenu">Voltar para o Menu Principal</button>
+        <button id="voltarParaMenuPrincipalGaragem">Voltar para o Menu Principal</button>
     </div>
 
     <!-- ==========================
@@ -74,11 +71,7 @@
          ========================== -->
     <div id="informacoesCarro" style="display: none;">
         <h2>Carro Comum</h2>
-
-        <!-- Container para layout de duas colunas -->
         <div class="detalhes-container">
-
-            <!-- Coluna 1: Informações do Veículo -->
             <div class="veiculo-info">
                 <img id="imagemCarro" src="img/carro.png" alt="Carro" width="200">
                 <p>Modelo: <span id="modeloCarro"></span></p>
@@ -86,24 +79,19 @@
                 <p>Velocidade: <span id="velocidadeCarro">0</span> km/h</p>
                 <p>Status: <span id="statusCarro">Desligado</span></p>
 
-                <!-- ===== ÁREA PARA DETALHES DA API (CARRO) ===== -->
-                <div class="detalhes-api-container" style="margin-top: 15px; margin-bottom:15px; padding: 10px; background-color: #e9ecef; border-radius: 5px; border: 1px solid #ced4da;">
+                <div class="detalhes-api-container">
                     <h5>Detalhes Extras (Simulado)</h5>
                     <div id="detalhesApiCarro">
-                        <p style="font-style: italic; color: #6c757d;">Clique em "Ver Detalhes Extras" na garagem para carregar.</p>
+                        <p>Clique em "Ver Detalhes Extras" na garagem para carregar.</p>
                     </div>
                 </div>
-                <!-- =========================================== -->
 
-                <!-- Botões de Ação com data-veiculo-id -->
                 <button id="ligarDesligarCarro" data-veiculo-id="">Ligar/Desligar</button>
                 <button id="acelerarCarro" data-veiculo-id="">Acelerar</button>
                 <button id="frearCarro" data-veiculo-id="">Frear</button>
                 <button id="buzinarCarro" data-veiculo-id="">Buzinar</button>
                 <button id="voltarParaGaragemCarro">Voltar para Garagem</button>
             </div>
-
-            <!-- Coluna 2: Seção de Manutenção -->
             <div class="manutencao-section">
                 <h3>Agendar Manutenção</h3>
                 <form id="formAgendamentoCarro" class="form-agendamento">
@@ -126,21 +114,18 @@
                         <label for="descricaoServicoCarro">Descrição (Opcional):</label>
                         <textarea id="descricaoServicoCarro" rows="2" placeholder="Detalhes adicionais..."></textarea>
                     </div>
-                    <button type="submit">Agendar/Registrar Serviço</button>
+                    <button type="submit">Agendar/Registrar</button>
                 </form>
-
                 <h4>Histórico de Manutenção</h4>
                 <ul id="historicoManutencaoCarro" class="lista-manutencao">
                     <li>Nenhum histórico registrado.</li>
                 </ul>
-
                 <h4>Agendamentos Futuros</h4>
                 <ul id="agendamentosFuturosCarro" class="lista-manutencao">
                     <li>Nenhum agendamento futuro.</li>
                 </ul>
             </div>
-
-        </div> <!-- Fim do Container de Duas Colunas -->
+        </div>
     </div>
 
     <!-- ==========================
@@ -148,11 +133,7 @@
          ========================== -->
     <div id="informacoesCarroEsportivo" style="display: none;">
         <h2>Carro Esportivo</h2>
-
-        <!-- Container para layout de duas colunas -->
         <div class="detalhes-container">
-
-            <!-- Coluna 1: Informações do Veículo -->
             <div class="veiculo-info">
                 <img id="imagemCarroEsportivo" src="img/carroEsportivo.png" alt="Carro Esportivo" width="200">
                 <p>Modelo: <span id="modeloCarroEsportivo"></span></p>
@@ -161,16 +142,13 @@
                 <p>Status: <span id="statusCarroEsportivo">Desligado</span></p>
                 <p>Turbo: <span id="turboCarroEsportivo">Desativado</span></p>
 
-                 <!-- ===== ÁREA PARA DETALHES DA API (ESPORTIVO) ===== -->
-                <div class="detalhes-api-container" style="margin-top: 15px; margin-bottom:15px; padding: 10px; background-color: #e9ecef; border-radius: 5px; border: 1px solid #ced4da;">
+                <div class="detalhes-api-container">
                     <h5>Detalhes Extras (Simulado)</h5>
                     <div id="detalhesApiCarroEsportivo">
-                        <p style="font-style: italic; color: #6c757d;">Clique em "Ver Detalhes Extras" na garagem para carregar.</p>
+                        <p>Clique em "Ver Detalhes Extras" na garagem para carregar.</p>
                     </div>
                 </div>
-                <!-- =============================================== -->
 
-                <!-- Botões de Ação com data-veiculo-id -->
                 <button id="ligarDesligarCarroEsportivo" data-veiculo-id="">Ligar/Desligar</button>
                 <button id="acelerarCarroEsportivo" data-veiculo-id="">Acelerar</button>
                 <button id="frearCarroEsportivo" data-veiculo-id="">Frear</button>
@@ -179,8 +157,6 @@
                 <button id="buzinarCarroEsportivo" data-veiculo-id="">Buzinar</button>
                 <button id="voltarParaGaragemEsportivo">Voltar para Garagem</button>
             </div>
-
-            <!-- Coluna 2: Seção de Manutenção -->
             <div class="manutencao-section">
                 <h3>Agendar Manutenção</h3>
                 <form id="formAgendamentoCarroEsportivo" class="form-agendamento">
@@ -203,21 +179,18 @@
                         <label for="descricaoServicoCarroEsportivo">Descrição (Opcional):</label>
                         <textarea id="descricaoServicoCarroEsportivo" rows="2" placeholder="Detalhes adicionais..."></textarea>
                     </div>
-                    <button type="submit">Agendar/Registrar Serviço</button>
+                    <button type="submit">Agendar/Registrar</button>
                 </form>
-
                 <h4>Histórico de Manutenção</h4>
                 <ul id="historicoManutencaoCarroEsportivo" class="lista-manutencao">
                     <li>Nenhum histórico registrado.</li>
                 </ul>
-
                 <h4>Agendamentos Futuros</h4>
                 <ul id="agendamentosFuturosCarroEsportivo" class="lista-manutencao">
                     <li>Nenhum agendamento futuro.</li>
                 </ul>
             </div>
-
-        </div> <!-- Fim do Container de Duas Colunas -->
+        </div>
     </div>
 
     <!-- ==========================
@@ -225,45 +198,36 @@
          ========================== -->
     <div id="informacoesCaminhao" style="display: none;">
         <h2>Caminhão</h2>
-
-        <!-- Container para layout de duas colunas -->
         <div class="detalhes-container">
-
-            <!-- Coluna 1: Informações do Veículo -->
             <div class="veiculo-info">
                 <img id="imagemCaminhao" src="img/caminhao.png" alt="Caminhão" width="300">
                 <p>Modelo: <span id="modeloCaminhao"></span></p>
                 <p>Cor: <span id="corCaminhao"></span></p>
                 <p>Velocidade: <span id="velocidadeCaminhao">0</span> km/h</p>
+                <p>Status: <span id="statusCaminhao">Desligado</span></p>
                 <p>Capacidade de Carga: <span id="capacidadeCargaCaminhao"></span> kg</p>
                 <p>Carga Atual: <span id="cargaAtualCaminhao">0</span> kg</p>
 
-                <!-- ===== ÁREA PARA DETALHES DA API (CAMINHÃO) ===== -->
-                <div class="detalhes-api-container" style="margin-top: 15px; margin-bottom:15px; padding: 10px; background-color: #e9ecef; border-radius: 5px; border: 1px solid #ced4da;">
+                <div class="detalhes-api-container">
                     <h5>Detalhes Extras (Simulado)</h5>
                     <div id="detalhesApiCaminhao">
-                        <p style="font-style: italic; color: #6c757d;">Clique em "Ver Detalhes Extras" na garagem para carregar.</p>
+                        <p>Clique em "Ver Detalhes Extras" na garagem para carregar.</p>
                     </div>
                 </div>
-                <!-- ============================================ -->
 
-                <!-- Controles de Carga -->
-                <div>
+                <div class="controles-carga">
                     <label for="quantidadeCarga">Qtd. Carga (kg):</label>
                     <input type="number" id="quantidadeCarga" value="1000" min="1">
                     <button id="carregarCaminhao" data-veiculo-id="">Carregar</button>
                     <button id="descarregarCaminhao" data-veiculo-id="">Descarregar</button>
                 </div>
 
-                <!-- Botões de Ação com data-veiculo-id -->
                 <button id="ligarDesligarCaminhao" data-veiculo-id="">Ligar/Desligar</button>
                 <button id="acelerarCaminhao" data-veiculo-id="">Acelerar</button>
                 <button id="frearCaminhao" data-veiculo-id="">Frear</button>
                 <button id="buzinarCaminhao" data-veiculo-id="">Buzinar</button>
                 <button id="voltarParaGaragemCaminhao">Voltar para Garagem</button>
             </div>
-
-            <!-- Coluna 2: Seção de Manutenção -->
             <div class="manutencao-section">
                 <h3>Agendar Manutenção</h3>
                 <form id="formAgendamentoCaminhao" class="form-agendamento">
@@ -286,21 +250,18 @@
                         <label for="descricaoServicoCaminhao">Descrição (Opcional):</label>
                         <textarea id="descricaoServicoCaminhao" rows="2" placeholder="Detalhes adicionais..."></textarea>
                     </div>
-                    <button type="submit">Agendar/Registrar Serviço</button>
+                    <button type="submit">Agendar/Registrar</button>
                 </form>
-
                 <h4>Histórico de Manutenção</h4>
                 <ul id="historicoManutencaoCaminhao" class="lista-manutencao">
                     <li>Nenhum histórico registrado.</li>
                 </ul>
-
                 <h4>Agendamentos Futuros</h4>
                 <ul id="agendamentosFuturosCaminhao" class="lista-manutencao">
                    <li>Nenhum agendamento futuro.</li>
                 </ul>
             </div>
-
-        </div> <!-- Fim do Container de Duas Colunas -->
+        </div>
     </div>
 
     <!-- ==========================
@@ -313,9 +274,6 @@
     <audio id="somBuzinaEsportivo" src="som/buzinaEsportivo.mp3" preload="auto"></audio>
     <audio id="somBuzinaCaminhao" src="som/buzinaCaminhao.mp3" preload="auto"></audio>
 
-    <!-- ==========================
-         LINK PARA O SCRIPT JS (NO FINAL)
-         ========================== -->
     <script src="script.js"></script>
 </body>
 </html>
