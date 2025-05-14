@@ -75,7 +75,7 @@ class Veiculo {
         if (!modelo || typeof modelo !== 'string' || modelo.trim() === '') throw new Error("Modelo inválido");
         if (!cor || typeof cor !== 'string' || cor.trim() === '') throw new Error("Cor inválida");
 
-        this.id = `v-${Date.now()}-${Math.random().toString(16).substring(2, 8)}`; // <<< ID DINÂMICO RESTAURADO
+        this.id = `v-${Date.now()}-${Math.random().toString(16).substring(2, 8)}`;
 
         this.modelo = modelo.trim();
         this.cor = cor.trim();
@@ -142,7 +142,7 @@ class Veiculo {
                     break;
                 default: throw new Error(`Tipo desconhecido: ${obj.tipoVeiculo}`);
             }
-            veiculo.id = obj.id || veiculo.id; // Mantém ID se já existir
+            veiculo.id = obj.id || veiculo.id;
             veiculo.ligado = obj.ligado || false;
             if (veiculo.hasOwnProperty('velocidade')) veiculo.velocidade = Number(obj.velocidade) || 0;
             if (Array.isArray(obj.historicoManutencao)) {
@@ -259,20 +259,20 @@ class Caminhao extends Carro {
  * @returns {Promise<object|null>}
  */
 async function buscarDetalhesVeiculoAPI(identificadorVeiculo) {
-    const url = './dados_veiculos_api.json'; // Caminho relativo ao index.html
-    console.log("[API Simulada Veic] Buscando para ID:", identificadorVeiculo); // LOG 1
-    console.log("[API Simulada Veic] URL da requisição:", url); // LOG 2
+    const url = './dados_veiculos_api.json';
+    console.log("[API Simulada Veic] Buscando para ID:", identificadorVeiculo);
+    console.log("[API Simulada Veic] URL da requisição:", url);
     try {
-        const response = await fetch(url, { cache: "no-cache" }); // Força buscar o arquivo mais recente
-        console.log("[API Simulada Veic] Resposta do fetch:", response); // LOG 3
+        const response = await fetch(url, { cache: "no-cache" });
+        console.log("[API Simulada Veic] Resposta do fetch:", response);
 
         if (!response.ok) {
-            console.error("[API Simulada Veic] Resposta não OK:", response.status, response.statusText); // LOG 4
+            console.error("[API Simulada Veic] Resposta não OK:", response.status, response.statusText);
             throw new Error(`HTTP error! status: ${response.status} ao buscar ${url}`);
         }
 
         const dadosTodos = await response.json();
-        console.log("[API Simulada Veic] JSON completo carregado:", dadosTodos); // LOG 5
+        console.log("[API Simulada Veic] JSON completo carregado:", dadosTodos);
 
         if (!Array.isArray(dadosTodos)) {
             console.error("[API Simulada Veic] O JSON carregado não é um array!", dadosTodos);
@@ -280,9 +280,9 @@ async function buscarDetalhesVeiculoAPI(identificadorVeiculo) {
         }
 
         const detalhesEncontrados = dadosTodos.find(v => v.id === identificadorVeiculo);
-        console.log("[API Simulada Veic] Detalhes encontrados para o ID:", detalhesEncontrados); // LOG 6
+        console.log("[API Simulada Veic] Detalhes encontrados para o ID:", detalhesEncontrados);
 
-        return detalhesEncontrados || null; // Retorna o objeto encontrado ou null
+        return detalhesEncontrados || null;
 
     } catch (error) {
         console.error(`[API Simulada Veic] Erro ao buscar/processar dados_veiculos_api.json:`, error);
@@ -440,18 +440,18 @@ document.body.addEventListener('click', async (event) => {
         if (v && confirm(`Remover ${v.modelo}?`)) removerVeiculoDaGaragem(veiculoId);
     } else if (target.classList.contains('btn-remover-manutencao')) {
         const manutId = target.dataset.manutencaoId;
-        const vId = target.dataset.veiculoId; // ID do veículo associado à manutenção
+        const vId = target.dataset.veiculoId;
         const v = encontrarVeiculoPorId(vId);
         if (v && manutId && confirm("Remover este registro de manutenção?")) {
             if (v.removerManutencao(manutId)) {
                 salvarGaragem();
-                exibirHistoricoEAgendamentos(v); // Atualiza a UI
+                exibirHistoricoEAgendamentos(v);
             }
         }
     } else if (target.classList.contains('btn-buscar-detalhes-api') && veiculoId) {
         const v = encontrarVeiculoPorId(veiculoId);
         if (!v) return;
-        mostrarDetalhesVeiculo(veiculoId); // Mostra a tela de detalhes primeiro
+        mostrarDetalhesVeiculo(veiculoId);
         const apiDiv = document.getElementById(`detalhesApi${v.constructor.name}`);
         if (!apiDiv) return;
 
@@ -471,7 +471,7 @@ document.body.addEventListener('click', async (event) => {
         } else {
             apiDiv.innerHTML = '<p style="color: orange;">Detalhes extras não encontrados ou ocorreu um erro ao buscar.</p>';
         }
-    } else if (veiculoId) { // Ações do veículo (botões de ligar, acelerar, etc.)
+    } else if (veiculoId) {
         const v = encontrarVeiculoPorId(veiculoId);
         if (!v) return;
         const tipo = v.constructor.name;
@@ -500,7 +500,6 @@ document.getElementById("voltarParaGaragemCarro")?.addEventListener("click", () 
 document.getElementById("voltarParaGaragemEsportivo")?.addEventListener("click", () => mostrarTela("garagem"));
 document.getElementById("voltarParaGaragemCaminhao")?.addEventListener("click", () => mostrarTela("garagem"));
 
-// Formulário Adicionar Veículo
 document.getElementById('formAdicionarVeiculo')?.addEventListener('submit', function(e) {
     e.preventDefault();
     const tipo = document.getElementById('tipoNovoVeiculo').value;
@@ -518,7 +517,7 @@ document.getElementById('formAdicionarVeiculo')?.addEventListener('submit', func
         salvarGaragem();
         atualizarListaGaragemUI();
         alert(`${tipo === 'Carro' ? 'Carro Comum' : tipo} "${modelo}" adicionado à garagem!`);
-        this.reset(); // Limpa o formulário
+        this.reset();
         document.getElementById('campoCapacidadeCaminhao').style.display = (document.getElementById('tipoNovoVeiculo').value === 'Caminhao' ? 'flex' : 'none');
     } catch (err) { alert(`Erro ao adicionar veículo: ${err.message}`); }
 });
@@ -527,11 +526,10 @@ document.getElementById('tipoNovoVeiculo')?.addEventListener('change', function(
     document.getElementById('campoCapacidadeCaminhao').style.display = this.value === 'Caminhao' ? 'flex' : 'none';
 });
 
-// Formulários de Agendamento
 function handleAgendamento(event) {
     event.preventDefault();
     const form = event.target;
-    const veiculoId = form.querySelector('input[type="hidden"]')?.value; // O '?' é opcional chaining
+    const veiculoId = form.querySelector('input[type="hidden"]')?.value;
     if (!veiculoId) { alert("Erro: ID do veículo não encontrado no formulário."); return; }
     const v = encontrarVeiculoPorId(veiculoId);
     if (!v) { alert("Erro: Veículo não encontrado para agendamento."); return; }
@@ -557,7 +555,6 @@ function handleAgendamento(event) {
     document.getElementById(id)?.addEventListener('submit', handleAgendamento);
 });
 
-/** Verifica agendamentos próximos e alerta o usuário. */
 function verificarAgendamentosProximos() {
     const hoje = new Date(); hoje.setHours(0,0,0,0);
     const amanha = new Date(hoje); amanha.setDate(hoje.getDate() + 1);
@@ -581,11 +578,9 @@ function verificarAgendamentosProximos() {
 //        LÓGICA DA API OPENWEATHERMAP
 // =============================================
 
-// ATENÇÃO: ARMAZENAR A API KEY DIRETAMENTE NO CÓDIGO FRONTEND É INSEGURO!
-// Em uma aplicação real, a chave NUNCA deve ficar exposta aqui.
-// A forma correta envolve um backend (Node.js, Serverless) atuando como proxy.
-// Para FINS DIDÁTICOS nesta atividade, vamos usá-la aqui temporariamente.
-const OPENWEATHER_API_KEY = "SUA_CHAVE_OPENWEATHERMAP_AQUI"; // <-- SUBSTITUA PELA SUA CHAVE REAL
+// ATENÇÃO: A CHAVE ABAIXO FOI FORNECIDA PELO USUÁRIO E ESTÁ PÚBLICA.
+// RECOMENDA-SE GERAR UMA NOVA CHAVE E MANTÊ-LA PRIVADA APÓS ESTE TESTE.
+const OPENWEATHER_API_KEY = "9eb045d1a2a9e91802f90a9f47e0b504";
 
 /**
  * Busca a previsão do tempo detalhada (5 dias / 3 horas) para uma cidade.
@@ -594,7 +589,7 @@ const OPENWEATHER_API_KEY = "SUA_CHAVE_OPENWEATHERMAP_AQUI"; // <-- SUBSTITUA PE
  * @returns {Promise<object|null>} Dados da previsão ou null em caso de erro.
  */
 async function buscarPrevisaoDetalhada(cidade) {
-    if (!OPENWEATHER_API_KEY || OPENWEATHER_API_KEY === "SUA_CHAVE_OPENWEATHERMAP_AQUI") {
+    if (!OPENWEATHER_API_KEY || OPENWEATHER_API_KEY === "SUA_CHAVE_OPENWEATHERMAP_AQUI") { // Verificação de segurança adicional
         console.error("Chave API OpenWeatherMap não configurada ou é a chave placeholder.");
         alert("Erro: Chave da API OpenWeatherMap não configurada. Verifique o console e o código.");
         return null;
@@ -738,15 +733,13 @@ if (btnVerClimaDetalhado && inputCidadeClima && statusDivClima && resultadoDivCl
                 const previsaoProcessada = processarDadosForecast(dadosApi);
                 exibirPrevisaoDetalhada(previsaoProcessada, cidade);
                 if (!previsaoProcessada || previsaoProcessada.length === 0) {
-                    // Mensagem de erro já é tratada por exibirPrevisaoDetalhada
-                    statusDivClima.textContent = ""; // Limpa "Carregando..."
+                    statusDivClima.textContent = "";
                 } else {
-                    statusDivClima.textContent = ""; // Limpa "Carregando..."
+                    statusDivClima.textContent = "";
                 }
             } else {
-                // buscarPrevisaoDetalhada já deu alert
                 statusDivClima.textContent = `Falha ao buscar previsão para ${cidade}.`;
-                exibirPrevisaoDetalhada(null, cidade); // Mostra msg de erro padrão na div de resultado
+                exibirPrevisaoDetalhada(null, cidade);
             }
         } catch (error) {
             console.error("Erro no fluxo principal de busca de previsão detalhada:", error);
