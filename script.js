@@ -575,52 +575,56 @@ function verificarAgendamentosProximos() {
 
 
 // =============================================
-//        LÓGICA DA API OPENWEATHERMAP
+//        LÓGICA DA API OPENWEATHERMAP (MODIFICADA)
 // =============================================
 
-// ATENÇÃO: A CHAVE ABAIXO FOI FORNECIDA PELO USUÁRIO E ESTÁ PÚBLICA.
-// RECOMENDA-SE GERAR UMA NOVA CHAVE E MANTÊ-LA PRIVADA APÓS ESTE TESTE.
-const OPENWEATHER_API_KEY = "9eb045d1a2a9e91802f90a9f47e0b504";
+// A constante OPENWEATHER_API_KEY foi REMOVIDA daqui. Ela está segura no backend!
 
 /**
- * Busca a previsão do tempo detalhada (5 dias / 3 horas) para uma cidade.
+ * Busca a previsão do tempo detalhada (5 dias / 3 horas) para uma cidade,
+ * utilizando nosso backend como proxy.
  * @async
  * @param {string} cidade - O nome da cidade.
  * @returns {Promise<object|null>} Dados da previsão ou null em caso de erro.
  */
 async function buscarPrevisaoDetalhada(cidade) {
-    if (!OPENWEATHER_API_KEY || OPENWEATHER_API_KEY === "SUA_CHAVE_OPENWEATHERMAP_AQUI") { // Verificação de segurança adicional
-        console.error("Chave API OpenWeatherMap não configurada ou é a chave placeholder.");
-        alert("Erro: Chave da API OpenWeatherMap não configurada. Verifique o console e o código.");
-        return null;
-    }
-    const urlBase = "https://api.openweathermap.org/data/2.5/forecast";
     const cidadeCodificada = encodeURIComponent(cidade);
-    const url = `${urlBase}?q=${cidadeCodificada}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=pt_br`;
-    console.log(`[OpenWeatherAPI] Buscando previsão detalhada para: ${cidade}`);
-    console.log(`[OpenWeatherAPI] URL: ${url}`);
+    // A URL agora aponta para o seu servidor backend na porta 3001
+    const url = `http://localhost:3001/api/previsao/${cidadeCodificada}`;
+
+    console.log(`[Frontend] Buscando previsão para: ${cidade} via backend.`);
+    console.log(`[Frontend] URL para o backend: ${url}`);
 
     try {
-        const response = await fetch(url);
-        console.log("[OpenWeatherAPI] Resposta do fetch:", response);
+        const response = await fetch(url); // O fetch agora chama SEU backend
+        console.log("[Frontend] Resposta do fetch do backend:", response);
+
         if (!response.ok) {
-            let erroMsg = `Erro HTTP: ${response.status} - ${response.statusText}`;
-            try {
-                const errorData = await response.json();
-                if (errorData && errorData.message) erroMsg = `Erro da API: ${errorData.message} (Status: ${response.status})`;
-            }
-            catch (e) { console.warn("[OpenWeatherAPI] Não foi possível parsear a mensagem de erro da API.", e); }
-            throw new Error(erroMsg);
+            // Tenta pegar a mensagem de erro do JSON que o backend envia
+            const errorData = await response.json().catch(() => ({}));
+            // A mensagem de erro agora vem do seu backend
+            throw new Error(errorData.error || `Erro ${response.status} ao buscar previsão do backend.`);
         }
+
         const data = await response.json();
-        console.log("[OpenWeatherAPI] Dados da previsão detalhada recebidos:", data);
+        console.log("[Frontend] Dados da previsão recebidos do backend:", data);
+        // 'data' aqui deve ter o mesmo formato que a OpenWeatherMap enviava antes,
+        // pois nosso backend está apenas repassando.
         return data;
+
     } catch (error) {
-        console.error("[OpenWeatherAPI] Erro ao buscar previsão detalhada:", error);
-        alert(`Erro ao buscar previsão para "${cidade}": ${error.message}. Verifique o nome da cidade e a conexão.`);
+        console.error("[Frontend] Erro ao buscar previsão via backend:", error);
+        // Você pode querer atualizar a mensagem de alerta para o usuário.
+        // A função exibirPrevisaoDetalhada já lida com a UI de erro se 'data' for null.
+        alert(`Falha ao buscar previsão para "${cidade}": ${error.message}. Verifique o nome da cidade e se o servidor backend está rodando.`);
         return null;
     }
 }
+
+// As funções processarDadosForecast(dataAPI) e exibirPrevisaoDetalhada(previsaoDiariaProcessada, nomeCidade)
+// DEVEM PERMANECER COMO ESTÃO no seu script.js original, pois o formato dos dados que
+// o backend envia é o mesmo que a OpenWeatherMap enviava diretamente.
+// Vou incluí-las aqui para garantir que você as mantenha, mas elas NÃO MUDAM.
 
 /**
  * Processa os dados brutos da API de forecast, agrupando por dia.
@@ -683,7 +687,9 @@ function exibirPrevisaoDetalhada(previsaoDiariaProcessada, nomeCidade) {
     statusDiv.textContent = "";
 
     if (!previsaoDiariaProcessada || previsaoDiariaProcessada.length === 0) {
-        resultadoDiv.innerHTML = `<p>Não foi possível obter ou processar a previsão para ${nomeCidade}.</p>`;
+        // A mensagem de erro já é tratada no catch de buscarPrevisaoDetalhada ou se dados forem nulos
+        // Podemos manter ou simplificar aqui.
+        resultadoDiv.innerHTML = `<p>Não foi possível exibir a previsão para ${nomeCidade}. Verifique o console para detalhes.</p>`;
         return;
     }
 
@@ -712,7 +718,11 @@ function exibirPrevisaoDetalhada(previsaoDiariaProcessada, nomeCidade) {
     });
 }
 
-// Event Listener para o botão de previsão detalhada
+// O event listener para o botão "verificar-clima-detalhado-btn"
+// DEVE PERMANECER COMO ESTÁ no seu script.js original, pois ele já chama
+// buscarPrevisaoDetalhada, processarDadosForecast e exibirPrevisaoDetalhada
+// na sequência correta. Ele não precisa de alterações.
+// Vou incluir uma cópia dele aqui para referência, mas ele NÃO MUDA.
 const btnVerClimaDetalhado = document.getElementById("verificar-clima-detalhado-btn");
 const inputCidadeClima = document.getElementById("cidade-input");
 const statusDivClima = document.getElementById("previsao-detalhada-status");
@@ -728,20 +738,20 @@ if (btnVerClimaDetalhado && inputCidadeClima && statusDivClima && resultadoDivCl
         btnVerClimaDetalhado.disabled = true;
 
         try {
-            const dadosApi = await buscarPrevisaoDetalhada(cidade);
+            const dadosApi = await buscarPrevisaoDetalhada(cidade); // Chama a função MODIFICADA
             if (dadosApi) {
-                const previsaoProcessada = processarDadosForecast(dadosApi);
-                exibirPrevisaoDetalhada(previsaoProcessada, cidade);
-                if (!previsaoProcessada || previsaoProcessada.length === 0) {
-                    statusDivClima.textContent = "";
-                } else {
-                    statusDivClima.textContent = "";
-                }
+                const previsaoProcessada = processarDadosForecast(dadosApi); // Função original
+                exibirPrevisaoDetalhada(previsaoProcessada, cidade);    // Função original
+                statusDivClima.textContent = ""; // Limpa o status se sucesso
             } else {
-                statusDivClima.textContent = `Falha ao buscar previsão para ${cidade}.`;
+                // A função buscarPrevisaoDetalhada já deve ter mostrado um alerta ou logado o erro.
+                // exibirPrevisaoDetalhada(null, cidade) vai mostrar uma mensagem genérica de falha na UI.
                 exibirPrevisaoDetalhada(null, cidade);
+                statusDivClima.textContent = `Falha ao carregar dados para ${cidade}.`; // Pode ser redundante se o alerta já apareceu
             }
         } catch (error) {
+            // Este catch é mais para erros inesperados no fluxo do event listener,
+            // já que buscarPrevisaoDetalhada tem seu próprio try/catch.
             console.error("Erro no fluxo principal de busca de previsão detalhada:", error);
             statusDivClima.textContent = `Ocorreu um erro inesperado: ${error.message}`;
             exibirPrevisaoDetalhada(null, cidade);
@@ -752,7 +762,6 @@ if (btnVerClimaDetalhado && inputCidadeClima && statusDivClima && resultadoDivCl
 } else {
     console.warn("Elementos da UI para previsão do tempo detalhada não foram encontrados. Funcionalidade desabilitada.");
 }
-
 // --- Inicialização ---
 window.addEventListener('load', () => {
     console.log("Página carregada. Inicializando Garagem Inteligente...");
