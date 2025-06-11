@@ -590,7 +590,7 @@ function verificarAgendamentosProximos() {
 async function buscarPrevisaoDetalhada(cidade) {
     const cidadeCodificada = encodeURIComponent(cidade);
     // A URL agora aponta para o seu servidor backend na porta 3001
-    const url = `http://localhost:3001/api/previsao/${cidadeCodificada}`;
+    const url = `https://dashboard.render.com/web/srv-d1031oili9vc73de7720/deploys/dep-d1038gngi27c73f9i3mg?r=2025-06-04%4011%3A54%3A47%7E2025-06-04%4011%3A57%3A22${cidadeCodificada}`;
 
     console.log(`[Frontend] Buscando previsão para: ${cidade} via backend.`);
     console.log(`[Frontend] URL para o backend: ${url}`);
