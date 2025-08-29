@@ -1,3 +1,4 @@
+import axios from 'axios'; // NOVO: Importamos o axios para fazer requisições
 // backend/server.js
 import express from 'express';
 import mongoose from 'mongoose';
