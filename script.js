@@ -28,7 +28,7 @@ class Manutencao {
         if (isNaN(custoNum) || custoNum < 0) {
             throw new Error("Custo da manutenção inválido.");
         }
-        this.id = `m-${Date.now()}-${Math.random().toString(16).substring(2, 8)}`;
+        this.id = `m-${Date.now()}-${Math.random().toString(16).substring(2, 8)}`; 
         this.data = dataObj.toISOString();
         this.tipo = tipo.trim();
         this.custo = custoNum;
@@ -75,7 +75,7 @@ class Veiculo {
         if (!modelo || typeof modelo !== 'string' || modelo.trim() === '') throw new Error("Modelo inválido");
         if (!cor || typeof cor !== 'string' || cor.trim() === '') throw new Error("Cor inválida");
 
-        this.id = `v-${Date.now()}-${Math.random().toString(16).substring(2, 8)}`;
+        this.id = `v-${Date.now()}-${Math.random().toString(16).substring(2, 8)}`; 
 
         this.modelo = modelo.trim();
         this.cor = cor.trim();
@@ -117,15 +117,6 @@ class Veiculo {
             .filter(m => m.getDataObj() > agora)
             .map(m => ({ id: m.id, texto: m.formatarAgendamento() }));
     }
-    toPlainObject() {
-        return {
-            id: this.id, tipoVeiculo: this.constructor.name, modelo: this.modelo, cor: this.cor,
-            ligado: this.ligado,
-            historicoManutencao: this.historicoManutencao.map(m => ({
-                id: m.id, data: m.data, tipo: m.tipo, custo: m.custo, descricao: m.descricao
-            })),
-        };
-    }
     static fromPlainObject(obj) {
         let veiculo;
         try {
@@ -145,9 +136,18 @@ class Veiculo {
             veiculo.id = obj.id || veiculo.id;
             veiculo.ligado = obj.ligado || false;
             if (veiculo.hasOwnProperty('velocidade')) veiculo.velocidade = Number(obj.velocidade) || 0;
+            if (veiculo instanceof CarroEsportivo) veiculo.turboAtivado = obj.turboAtivado || false;
+            if (veiculo instanceof Caminhao) veiculo.cargaAtual = Number(obj.cargaAtual) || 0;
+            
             if (Array.isArray(obj.historicoManutencao)) {
                 veiculo.historicoManutencao = obj.historicoManutencao
-                    .map(mObj => Manutencao.fromPlainObject(mObj)).filter(m => m !== null);
+                    .map(mObj => Manutencao.fromPlainObject({
+                        id: mObj.id, 
+                        data: new Date(mObj.data).toISOString(),
+                        tipo: mObj.tipo, 
+                        custo: mObj.custo, 
+                        descricao: mObj.descricao
+                    })).filter(m => m !== null);
                 veiculo.historicoManutencao.sort((a, b) => b.getDataObj() - a.getDataObj());
             } else { veiculo.historicoManutencao = []; }
             return veiculo;
@@ -175,7 +175,6 @@ class Carro extends Veiculo {
         else { alert("O carro precisa estar ligado para frear!"); }
     }
     buzinar() { if (this.somBuzina) this.somBuzina.play().catch(e => console.warn("Audio error (buzina carro):", e)); else super.buzinar(); }
-    toPlainObject() { const p = super.toPlainObject(); p.velocidade = this.velocidade; return p; }
 }
 
 // ===== CLASSE CARRO ESPORTIVO =====
@@ -202,7 +201,6 @@ class CarroEsportivo extends Carro {
             if (this.somAceleracao) this.somAceleracao.play().catch(e => console.warn("Audio error (acelerar esportivo):", e));
         } else { alert("O carro precisa estar ligado para acelerar!"); }
     }
-    toPlainObject() { const p = super.toPlainObject(); p.turboAtivado = this.turboAtivado; return p; }
 }
 
 // ===== CLASSE CAMINHAO =====
@@ -243,12 +241,6 @@ class Caminhao extends Carro {
             this.cargaAtual -= q; alert(`Descarregado ${q}kg. Carga atual: ${this.cargaAtual}kg.`); return true;
         } else { alert(`Não é possível descarregar ${q}kg. Carga atual é de apenas ${this.cargaAtual}kg.`); return false; }
     }
-    toPlainObject() {
-        const p = super.toPlainObject();
-        p.capacidadeCarga = this.capacidadeCarga;
-        p.cargaAtual = this.cargaAtual;
-        return p;
-    }
 }
 
 // ===== API SIMULADA (DETALHES EXTRAS VEÍCULOS) =====
@@ -261,27 +253,18 @@ class Caminhao extends Carro {
 async function buscarDetalhesVeiculoAPI(identificadorVeiculo) {
     const url = './dados_veiculos_api.json';
     console.log("[API Simulada Veic] Buscando para ID:", identificadorVeiculo);
-    console.log("[API Simulada Veic] URL da requisição:", url);
     try {
         const response = await fetch(url, { cache: "no-cache" });
-        console.log("[API Simulada Veic] Resposta do fetch:", response);
-
         if (!response.ok) {
             console.error("[API Simulada Veic] Resposta não OK:", response.status, response.statusText);
             throw new Error(`HTTP error! status: ${response.status} ao buscar ${url}`);
         }
-
         const dadosTodos = await response.json();
-        console.log("[API Simulada Veic] JSON completo carregado:", dadosTodos);
-
         if (!Array.isArray(dadosTodos)) {
             console.error("[API Simulada Veic] O JSON carregado não é um array!", dadosTodos);
             return null;
         }
-
         const detalhesEncontrados = dadosTodos.find(v => v.id === identificadorVeiculo);
-        console.log("[API Simulada Veic] Detalhes encontrados para o ID:", detalhesEncontrados);
-
         return detalhesEncontrados || null;
 
     } catch (error) {
@@ -292,35 +275,42 @@ async function buscarDetalhesVeiculoAPI(identificadorVeiculo) {
 
 // ===== GERENCIAMENTO DA GARAGEM E PERSISTÊNCIA (AGORA VIA API) =====
 let garagemVeiculos = [];
-// As funções salvarGaragem e o STORAGE_KEY DEVEM SER REMOVIDOS.
+// *** NOVO: URL BASE DO BACKEND (necessário se o frontend e backend estão em portas diferentes) ***
+const API_BASE_URL = 'http://localhost:3001'; 
+
 
 /** Carrega a garagem do Servidor Backend. */
 async function carregarGaragem() {
     try {
-        const response = await fetch('/api/veiculos'); // GET /api/veiculos
-        if (!response.ok) { throw new Error('Falha ao buscar veículos no servidor.'); }
+        // *** URL CORRIGIDA ***
+        const response = await fetch(`${API_BASE_URL}/api/veiculos`); 
+        
+        if (!response.ok) { 
+            const errorText = await response.text();
+            throw new Error(`Falha ao buscar veículos no servidor: Status ${response.status}. Detalhe: ${errorText.substring(0, 100)}`); 
+        }
 
         const dadosDoServidor = await response.json();
 
-        // Converte os objetos JSON recebidos do servidor de volta para instâncias de classe
+        // Converte os objetos JSON do servidor para instâncias de classe
         garagemVeiculos = dadosDoServidor
             .map(obj => {
-                // Adapta IDs Mongoose (_id) e Datas para o formato esperado pelo fromPlainObject
                 obj.historicoManutencao = (obj.historicoManutencao || []).map(m => ({
-                    id: m.id || m._id, // Garante que o ID do subdocumento é usado
+                    id: m.id || m._id, 
                     data: new Date(m.data).toISOString(),
                     tipo: m.tipo, custo: m.custo, descricao: m.descricao
                 }));
-                // Veiculo.fromPlainObject() já lida com os campos específicos de cada tipo
                 return Veiculo.fromPlainObject(obj);
             })
             .filter(v => v !== null);
 
     } catch (e) {
         console.error("Erro ao carregar garagem do backend:", e);
-        garagemVeiculos = []; // Limpa em caso de erro
+        if (e.message.includes('Failed to fetch')) {
+             alert(`Erro de Conexão: O servidor backend não está respondendo em ${API_BASE_URL}. Verifique se o 'server.js' está rodando.`);
+        }
+        garagemVeiculos = []; 
     }
-    // ESTA ERA A LINHA FALTANDO NA SUA EXECUÇÃO!
     atualizarListaGaragemUI();
     verificarAgendamentosProximos();
 }
@@ -331,8 +321,7 @@ function encontrarVeiculoPorId(id) { return garagemVeiculos.find(v => v.id === i
 // ===== LÓGICA DA INTERFACE (UI) E EVENTOS =====
 
 /** 
- * FUNÇÃO FALTANDO (CAUSA DO ERRO) - Atualiza a lista de veículos na UI da garagem. 
- * Foi reinserida aqui para resolver o 'ReferenceError'.
+ * Atualiza a lista de veículos na UI da garagem. 
  */
 function atualizarListaGaragemUI() {
     const listaDiv = document.getElementById('listaVeiculosGaragem');
@@ -364,8 +353,11 @@ async function removerVeiculoDaGaragem(veiculoId) {
     const v = encontrarVeiculoPorId(veiculoId);
     if (!v) { alert("Veículo não encontrado!"); return; }
 
+    if (!confirm(`Tem certeza que deseja remover ${v.modelo} da garagem?`)) return;
+
     try {
-        const response = await fetch(`/api/veiculos/${veiculoId}`, { // DELETE /api/veiculos/:id
+        // *** URL CORRIGIDA ***
+        const response = await fetch(`${API_BASE_URL}/api/veiculos/${veiculoId}`, { 
             method: 'DELETE'
         });
 
@@ -471,15 +463,22 @@ document.getElementById('formAdicionarVeiculo')?.addEventListener('submit', asyn
     };
 
     try {
-        const response = await fetch('/api/veiculos', { // POST /api/veiculos
+        // *** URL CORRIGIDA ***
+        const response = await fetch(`${API_BASE_URL}/api/veiculos`, { 
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dadosParaEnviar)
         });
 
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || "Erro desconhecido ao adicionar veículo.");
+            let errorMessage = "Erro desconhecido ao adicionar veículo.";
+            try {
+                const errorData = await response.json();
+                errorMessage = errorData.error || errorData.details || errorMessage;
+            } catch (e) {
+                errorMessage = `O servidor falhou com status ${response.status}. Verifique o console do backend.`;
+            }
+            throw new Error(errorMessage);
         }
         
         await carregarGaragem(); 
@@ -501,18 +500,18 @@ document.body.addEventListener('click', async (event) => {
         mostrarDetalhesVeiculo(veiculoId);
     } else if (target.classList.contains('btn-remover-veiculo') && veiculoId) {
         const v = encontrarVeiculoPorId(veiculoId);
-        if (v && confirm(`Remover ${v.modelo}?`)) removerVeiculoDaGaragem(veiculoId);
+        if (v) removerVeiculoDaGaragem(veiculoId);
     } else if (target.classList.contains('btn-remover-manutencao')) {
         const manutId = target.dataset.manutencaoId;
         const vId = target.dataset.veiculoId;
         const v = encontrarVeiculoPorId(vId);
         if (v && manutId && confirm("Remover este registro de manutenção?")) {
             try {
-                // DELETE /api/veiculos/:veiculoId/manutencao/:manutencaoId
-                const response = await fetch(`/api/veiculos/${vId}/manutencao/${manutId}`, { method: 'DELETE' });
+                // *** URL CORRIGIDA ***
+                const response = await fetch(`${API_BASE_URL}/api/veiculos/${vId}/manutencao/${manutId}`, { method: 'DELETE' });
                 if (!response.ok) throw new Error("Falha ao remover manutenção no servidor.");
                 
-                await carregarGaragem(); // Recarrega para atualizar a lista local
+                await carregarGaragem(); 
                 const veiculoAtualizado = encontrarVeiculoPorId(vId);
                 if (veiculoAtualizado) exibirHistoricoEAgendamentos(veiculoAtualizado);
 
@@ -548,9 +547,9 @@ document.body.addEventListener('click', async (event) => {
         const v = encontrarVeiculoPorId(veiculoId);
         if (!v) return;
         const tipo = v.constructor.name;
-        let estadoASalvar = null; // Objeto de estado a ser enviado via PATCH
+        let estadoASalvar = null; 
         
-        // 1. Executa a lógica de negócios localmente (para calcular nova velocidade, etc.)
+        // 1. Executa a lógica de negócios localmente 
         if (target.id === `ligarDesligar${tipo}`) { v.ligado ? v.desligar() : v.ligar(); estadoASalvar = { ligado: v.ligado, velocidade: v.velocidade || 0 }; }
         else if (target.id === `acelerar${tipo}`) { v.acelerar(); estadoASalvar = { velocidade: v.velocidade }; }
         else if (target.id === `frear${tipo}`) { v.frear(); estadoASalvar = { velocidade: v.velocidade }; }
@@ -565,11 +564,11 @@ document.body.addEventListener('click', async (event) => {
             if (v.descarregar(qtd)) { estadoASalvar = { cargaAtual: v.cargaAtual }; }
         }
 
-        // 2. Se houve uma mudança de estado (estadoASalvar não é null), salva no servidor
+        // 2. Se houve uma mudança de estado, salva no servidor
         if (estadoASalvar) {
             try {
-                // PATCH /api/veiculos/:id (Envia apenas o que mudou)
-                const response = await fetch(`/api/veiculos/${veiculoId}`, { 
+                // *** URL CORRIGIDA ***
+                const response = await fetch(`${API_BASE_URL}/api/veiculos/${veiculoId}`, { 
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ estado: estadoASalvar })
@@ -577,13 +576,11 @@ document.body.addEventListener('click', async (event) => {
                 
                 if (!response.ok) { throw new Error("Falha ao salvar estado no servidor."); }
                 
-                // Atualiza a UI com o novo estado (já está atualizado no objeto v)
                 mostrarDetalhesVeiculo(veiculoId); 
                 
             } catch (error) {
                 console.error("Erro ao salvar estado do veículo:", error);
                 alert(`Erro ao salvar estado: ${error.message}.`);
-                // Uma implementação mais robusta reverteria o estado local aqui se o save falhar
             }
         }
     }
@@ -618,16 +615,22 @@ async function handleAgendamento(event) {
     const dadosParaEnviar = { data, hora, tipoServico, custo, descricao };
 
     try {
-        // POST /api/veiculos/:id/manutencao
-        const response = await fetch(`/api/veiculos/${veiculoId}/manutencao`, { 
+        // *** URL CORRIGIDA ***
+        const response = await fetch(`${API_BASE_URL}/api/veiculos/${veiculoId}/manutencao`, { 
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dadosParaEnviar)
         });
 
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || "Erro desconhecido ao agendar manutenção.");
+            let errorMessage = "Erro desconhecido ao agendar manutenção.";
+            try {
+                const errorData = await response.json();
+                errorMessage = errorData.error || errorData.details || errorMessage;
+            } catch (e) {
+                errorMessage = `O servidor falhou com status ${response.status}. Verifique o console do backend.`;
+            }
+            throw new Error(errorMessage);
         }
         
         await carregarGaragem(); 
@@ -668,9 +671,165 @@ function verificarAgendamentosProximos() {
 // =============================================
 //        LÓGICA DA API OPENWEATHERMAP (MANTIDA)
 // =============================================
-// ... (mantenha todas as funções de clima intactas: buscarPrevisaoDetalhada, processarDadosForecast, exibirPrevisaoDetalhada) ...
+
+/**
+ * Busca a previsão do tempo detalhada (5 dias / 3 horas) para uma cidade,
+ * utilizando nosso backend como proxy.
+ * @async
+ * @param {string} cidade - O nome da cidade.
+ * @returns {Promise<object|null>} Dados da previsão ou null em caso de erro.
+ */
+async function buscarPrevisaoDetalhada(cidade) {
+    const cidadeCodificada = encodeURIComponent(cidade);
+    // *** URL CORRIGIDA ***
+    const url = `${API_BASE_URL}/api/previsao/${cidadeCodificada}`; 
+
+    console.log(`[Frontend] Buscando previsão para: ${cidade} via backend.`);
+
+    try {
+        const response = await fetch(url); 
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || `Erro ${response.status} ao buscar previsão do backend.`);
+        }
+
+        const data = await response.json();
+        return data;
+
+    } catch (error) {
+        console.error("[Frontend] Erro ao buscar previsão via backend:", error);
+        alert(`Falha ao buscar previsão para "${cidade}": ${error.message}. Verifique o nome da cidade e se o servidor backend está rodando na porta correta (3001).`);
+        return null;
+    }
+}
 
 
+/**
+ * Processa os dados brutos da API de forecast, agrupando por dia.
+ * @param {object} dataAPI - Dados da API OpenWeatherMap.
+ * @returns {Array<object>|null} Array de objetos com resumo diário ou null.
+ */
+function processarDadosForecast(dataAPI) {
+    if (!dataAPI || !dataAPI.list || !Array.isArray(dataAPI.list) || dataAPI.list.length === 0) {
+        console.error("[ProcessamentoForecast] Dados da API inválidos ou lista de previsões vazia.", dataAPI);
+        return null;
+    }
+    const previsaoPorDia = {};
+    dataAPI.list.forEach(item => {
+        const dataHora = item.dt_txt;
+        const dia = dataHora.split(' ')[0];
+        if (!previsaoPorDia[dia]) {
+            previsaoPorDia[dia] = { temperaturas: [], momentos: [] };
+        }
+        previsaoPorDia[dia].temperaturas.push(item.main.temp);
+        previsaoPorDia[dia].momentos.push({
+            hora: dataHora.split(' ')[1].substring(0, 5),
+            temp: item.main.temp,
+            descricao: item.weather[0].description,
+            icone: item.weather[0].icon
+        });
+    });
+
+    const resultadoFinal = Object.keys(previsaoPorDia).map(dia => {
+        const dadosDia = previsaoPorDia[dia];
+        const temp_min = Math.min(...dadosDia.temperaturas);
+        const temp_max = Math.max(...dadosDia.temperaturas);
+        const itemRep = dadosDia.momentos.find(m => m.hora === "12:00" || m.hora === "15:00") || dadosDia.momentos[Math.floor(dadosDia.momentos.length / 2)] || dadosDia.momentos[0];
+
+        return {
+            data: dia,
+            temp_min: parseFloat(temp_min.toFixed(1)),
+            temp_max: parseFloat(temp_max.toFixed(1)),
+            descricao: itemRep.descricao.charAt(0).toUpperCase() + itemRep.descricao.slice(1),
+            icone: itemRep.icone,
+        };
+    }).sort((a, b) => new Date(a.data) - new Date(b.data));
+    console.log("[ProcessamentoForecast] Dados processados por dia:", resultadoFinal);
+    return resultadoFinal;
+}
+
+/**
+ * Exibe a previsão do tempo detalhada na UI.
+ * @param {Array<object>|null} previsaoDiariaProcessada - Dados processados.
+ * @param {string} nomeCidade - Nome da cidade.
+ */
+function exibirPrevisaoDetalhada(previsaoDiariaProcessada, nomeCidade) {
+    const resultadoDiv = document.getElementById("previsao-detalhada-resultado");
+    const statusDiv = document.getElementById("previsao-detalhada-status");
+
+    if (!resultadoDiv || !statusDiv) {
+        console.error("Elementos da UI para previsão detalhada não encontrados.");
+        return;
+    }
+    resultadoDiv.innerHTML = "";
+    statusDiv.textContent = "";
+
+    if (!previsaoDiariaProcessada || previsaoDiariaProcessada.length === 0) {
+        resultadoDiv.innerHTML = `<p>Não foi possível exibir a previsão para ${nomeCidade}. Verifique o console para detalhes.</p>`;
+        return;
+    }
+
+    const tituloH3 = document.createElement("h3");
+    tituloH3.textContent = `Previsão para ${nomeCidade.charAt(0).toUpperCase() + nomeCidade.slice(1)}`;
+    tituloH3.style.width = "100%";
+    tituloH3.style.textAlign = "center";
+    tituloH3.style.marginBottom = "15px";
+    resultadoDiv.appendChild(tituloH3);
+
+    previsaoDiariaProcessada.forEach(dia => {
+        const diaDiv = document.createElement("div");
+        diaDiv.classList.add("dia-previsao");
+        const [ano, mes, diaNum] = dia.data.split('-');
+        const dataFormatada = `${diaNum}/${mes}/${ano}`;
+        diaDiv.innerHTML = `
+            <h4>${dataFormatada}</h4>
+            <img src="https://openweathermap.org/img/wn/${dia.icone}@2x.png" alt="${dia.descricao}">
+            <p class="temperaturas">
+                <span class="temp-max">${dia.temp_max}°C</span> /
+                <span class="temp-min">${dia.temp_min}°C</span>
+            </p>
+            <p class="descricao-tempo">${dia.descricao}</p>
+        `;
+        resultadoDiv.appendChild(diaDiv);
+    });
+}
+
+const btnVerClimaDetalhado = document.getElementById("verificar-clima-detalhado-btn");
+const inputCidadeClima = document.getElementById("cidade-input");
+const statusDivClima = document.getElementById("previsao-detalhada-status");
+const resultadoDivClima = document.getElementById("previsao-detalhada-resultado");
+
+if (btnVerClimaDetalhado && inputCidadeClima && statusDivClima && resultadoDivClima) {
+    btnVerClimaDetalhado.addEventListener("click", async () => {
+        const cidade = inputCidadeClima.value.trim();
+        if (!cidade) { alert("Por favor, digite o nome de uma cidade."); return; }
+
+        statusDivClima.textContent = `Carregando previsão para ${cidade}...`;
+        resultadoDivClima.innerHTML = "";
+        btnVerClimaDetalhado.disabled = true;
+
+        try {
+            const dadosApi = await buscarPrevisaoDetalhada(cidade); 
+            if (dadosApi) {
+                const previsaoProcessada = processarDadosForecast(dadosApi); 
+                exibirPrevisaoDetalhada(previsaoProcessada, cidade);    
+                statusDivClima.textContent = ""; 
+            } else {
+                exibirPrevisaoDetalhada(null, cidade);
+                statusDivClima.textContent = `Falha ao carregar dados para ${cidade}.`; 
+            }
+        } catch (error) {
+            console.error("Erro no fluxo principal de busca de previsão detalhada:", error);
+            statusDivClima.textContent = `Ocorreu um erro inesperado: ${error.message}`;
+            exibirPrevisaoDetalhada(null, cidade);
+        } finally {
+            btnVerClimaDetalhado.disabled = false;
+        }
+    });
+} else {
+    console.warn("Elementos da UI para previsão do tempo detalhada não foram encontrados. Funcionalidade desabilitada.");
+}
 // --- Inicialização ---
 window.addEventListener('load', () => {
     console.log("Página carregada. Inicializando Garagem Inteligente...");

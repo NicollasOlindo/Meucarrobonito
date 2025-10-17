@@ -1,10 +1,11 @@
-// server.js (Conteúdo Modificado)
+// server.js (Conteúdo Finalizado)
 import express from 'express';
 import dotenv from 'dotenv';
 import axios from 'axios';
 import cors from 'cors'; 
-import mongoose from 'mongoose'; // <-- NOVO: Importa Mongoose
+import mongoose from 'mongoose'; 
 
+// Carrega variáveis de ambiente
 dotenv.config();
 
 const app = express();
@@ -13,13 +14,13 @@ app.use(express.json()); // ESSENCIAL para receber o corpo da requisição
 
 const port = process.env.PORT || 3001;
 const apiKey = process.env.OPENWEATHER_API_KEY;
-const mongoUri = process.env.MONGO_URI; // <-- O URI do Atlas
+const mongoUri = process.env.MONGO_URI; 
 
 // --- CONEXÃO COM O MONGO ---
 if (mongoUri) {
     mongoose.connect(mongoUri)
         .then(() => console.log('[Servidor DB] Conexão com MongoDB Atlas estabelecida com sucesso.'))
-        .catch(err => console.error('[Servidor DB] ERRO ao conectar com MongoDB:', err.message));
+        .catch(err => console.error('[Servidor DB] ERRO FATAL ao conectar com MongoDB:', err.message));
 } else {
     console.error('[Servidor DB] Variável MONGO_URI não está definida.');
 }
@@ -28,7 +29,6 @@ if (mongoUri) {
 
 // Schema de Manutencao (Subdocumento)
 const ManutencaoSchema = new mongoose.Schema({
-    // Usamos um ID personalizado para compatibilidade com o frontend
     id: { type: String, required: true, default: () => `m-${Date.now()}-${Math.random().toString(16).substring(2, 8)}` },
     data: { type: Date, required: true },
     tipo: { type: String, required: true },
@@ -43,16 +43,22 @@ const VeiculoSchema = new mongoose.Schema({
     cor: { type: String, required: true },
     ligado: { type: Boolean, default: false },
     velocidade: { type: Number, default: 0 },
-    turboAtivado: { type: Boolean, default: false }, // Carro Esportivo
-    capacidadeCarga: { type: Number, min: 1 },        // Caminhão
-    cargaAtual: { type: Number, default: 0 },          // Caminhão
-    historicoManutencao: [ManutencaoSchema], // Array de subdocumentos
+    turboAtivado: { type: Boolean, default: false }, 
+    capacidadeCarga: { type: Number, min: 1 },        
+    cargaAtual: { type: Number, default: 0 },          
+    historicoManutencao: [ManutencaoSchema], 
     createdAt: { type: Date, default: Date.now },
 }, { 
-    // Garante que o ID retornado seja 'id' em vez de '_id' para o frontend
-    toJSON: { virtuals: true, transform: (doc, ret) => { delete ret._id; delete ret.__v; return ret; } } 
+    toJSON: { 
+        virtuals: true, 
+        transform: (doc, ret) => { 
+            ret.id = ret._id.toHexString(); // Garante que o ID é copiado para 'id'
+            delete ret._id; 
+            delete ret.__v; 
+            return ret; 
+        } 
+    } 
 });
-VeiculoSchema.virtual('id').get(function() { return this._id.toHexString(); }); // Mapeia _id para id
 
 const Veiculo = mongoose.model('Veiculo', VeiculoSchema);
 
@@ -72,33 +78,47 @@ app.get('/api/veiculos', async (req, res) => {
 
 // POST /api/veiculos (Criar novo veículo)
 app.post('/api/veiculos', async (req, res) => {
+    // Linha de debug para verificar o payload que o frontend está enviando
+    console.log('[Servidor DB] Tentativa de adicionar veículo. Corpo recebido:', req.body);
+
     const { tipoVeiculo, modelo, cor, capacidadeCarga } = req.body;
     
     try {
+        if (!tipoVeiculo || !modelo || !cor) throw new Error("Modelo, Cor e Tipo são obrigatórios.");
+
         const dados = {
             tipoVeiculo, modelo, cor,
             velocidade: 0,
-            ...(tipoVeiculo === 'Caminhao' && { capacidadeCarga: parseFloat(capacidadeCarga), cargaAtual: 0 }),
-            ...(tipoVeiculo === 'CarroEsportivo' && { turboAtivado: false, velocidade: 0 }),
+            ligado: false, 
         };
+        
+        if (tipoVeiculo === 'Caminhao') {
+            const cap = parseFloat(capacidadeCarga);
+            if (isNaN(cap) || cap <= 0) throw new Error("Capacidade de carga inválida.");
+            dados.capacidadeCarga = cap;
+            dados.cargaAtual = 0;
+        } else if (tipoVeiculo === 'CarroEsportivo') {
+            dados.turboAtivado = false;
+        }
+
         const novoVeiculo = new Veiculo(dados);
-        await novoVeiculo.save();
-        res.status(201).json(novoVeiculo); 
+        const veiculoSalvo = await novoVeiculo.save();
+        res.status(201).json(veiculoSalvo); // Retorna o objeto salvo em JSON
     } catch (error) {
-        console.error('[Servidor DB] Erro ao adicionar veículo:', error);
-        res.status(400).json({ error: 'Dados do veículo inválidos.', details: error.message });
+        console.error('[Servidor DB] ERRO FATAL na rota POST /api/veiculos:', error.message);
+        // Garante que uma resposta JSON válida seja enviada em caso de erro
+        res.status(400).json({ error: 'Falha na validação ou salvamento do veículo.', details: error.message });
     }
 });
 
 // PATCH /api/veiculos/:id (Atualizar estado: ligar, acelerar, carga)
 app.patch('/api/veiculos/:id', async (req, res) => {
-    // O corpo da requisição { ligado: true } ou { velocidade: 50.5 }
     const { estado } = req.body; 
     try {
         const veiculoAtualizado = await Veiculo.findByIdAndUpdate(
             req.params.id, 
             { $set: estado }, 
-            { new: true, runValidators: true } // Retorna o doc atualizado
+            { new: true, runValidators: true } 
         );
 
         if (!veiculoAtualizado) return res.status(404).json({ error: 'Veículo não encontrado.' });
@@ -115,7 +135,7 @@ app.delete('/api/veiculos/:id', async (req, res) => {
     try {
         const veiculoRemovido = await Veiculo.findByIdAndDelete(req.params.id);
         if (!veiculoRemovido) return res.status(404).json({ error: 'Veículo não encontrado.' });
-        res.status(204).send(); 
+        res.status(204).send(); // Resposta 204 NÃO tem corpo JSON!
     } catch (error) {
         res.status(500).json({ error: 'Falha ao remover veículo.' });
     }
@@ -138,10 +158,10 @@ app.post('/api/veiculos/:id/manutencao', async (req, res) => {
         };
 
         veiculo.historicoManutencao.push(novaManutencao);
-        await veiculo.save();
+        const veiculoSalvo = await veiculo.save();
         
-        // Retorna o veículo completo para manter o frontend simples (apenas recarrega)
-        res.status(201).json(veiculo); 
+        // Retorna o veículo completo
+        res.status(201).json(veiculoSalvo); 
 
     } catch (error) {
         console.error('[Servidor DB] Erro ao adicionar manutenção:', error);
@@ -156,18 +176,47 @@ app.delete('/api/veiculos/:veiculoId/manutencao/:manutencaoId', async (req, res)
         const veiculo = await Veiculo.findById(req.params.veiculoId);
         if (!veiculo) return res.status(404).json({ error: 'Veículo não encontrado.' });
 
-        // Remove o subdocumento pelo ID (usando .pull() do Mongoose)
         veiculo.historicoManutencao.pull({ id: req.params.manutencaoId });
         await veiculo.save();
         
-        res.status(204).send(); 
+        res.status(204).send(); // Resposta 204 NÃO tem corpo JSON!
     } catch (error) {
         res.status(500).json({ error: 'Falha ao remover manutenção.' });
     }
 });
 
 // --- Rota da OpenWeatherMap (Mantida) ---
-// ... (mantenha a rota /api/previsao/:cidade) ...
+app.get('/api/previsao/:cidade', async (req, res) => {
+    const cidadeParam = req.params.cidade;
+
+    if (!apiKey) {
+        return res.status(500).json({ error: 'Configuração interna do servidor incompleta (API Key de Clima ausente).' });
+    }
+    if (!cidadeParam || cidadeParam.trim() === '') {
+        return res.status(400).json({ error: 'Nome da cidade é obrigatório.' });
+    }
+
+    const cidade = cidadeParam.trim();
+    const weatherAPIUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(cidade)}&appid=${apiKey}&units=metric&lang=pt_br`;
+
+    try {
+        const apiResponse = await axios.get(weatherAPIUrl);
+        
+        if (apiResponse.data && apiResponse.data.list) {
+            res.json(apiResponse.data);
+        } else {
+            res.status(502).json({ error: 'Resposta inesperada do serviço de previsão do tempo.' }); 
+        }
+    } catch (error) {
+        const status = error.response ? error.response.status : 500;
+        let message = 'Erro ao buscar previsão do tempo no serviço externo.'; 
+        if (error.response && error.response.data && error.response.data.message) {
+            message = error.response.data.message;
+        }
+        res.status(status).json({ error: message, details: error.response ? error.response.data : 'Network Error' });
+    }
+});
+
 
 // --- Tratamento de Erros e Inicialização ---
 app.use((req, res, next) => { res.status(404).json({ error: 'Rota não encontrada.' }); });
@@ -176,40 +225,3 @@ app.use((err, req, res, next) => { console.error('[Servidor] Erro não tratado:'
 app.listen(port, () => {
     console.log(`Servidor backend rodando em http://localhost:${port}`);
 });
-
-// ===== GERENCIAMENTO DA GARAGEM E PERSISTÊNCIA (AGORA VIA API) =====
-let garagemVeiculos = [];
-// As funções salvarGaragem e o STORAGE_KEY DEVEM SER REMOVIDOS.
-
-/** Carrega a garagem do Servidor Backend. */
-async function carregarGaragem() {
-    try {
-        const response = await fetch('/api/veiculos'); // GET /api/veiculos
-        if (!response.ok) { throw new Error('Falha ao buscar veículos no servidor.'); }
-
-        const dadosDoServidor = await response.json();
-
-        // Converte os objetos JSON recebidos do servidor de volta para instâncias de classe
-        garagemVeiculos = dadosDoServidor
-            .map(obj => {
-                // Adapta IDs Mongoose (_id) e Datas para o formato esperado pelo fromPlainObject
-                obj.historicoManutencao = (obj.historicoManutencao || []).map(m => ({
-                    id: m.id || m._id, // Garante que o ID do subdocumento é usado
-                    data: new Date(m.data).toISOString(),
-                    tipo: m.tipo, custo: m.custo, descricao: m.descricao
-                }));
-                // Veiculo.fromPlainObject() já lida com os campos específicos de cada tipo
-                return Veiculo.fromPlainObject(obj);
-            })
-            .filter(v => v !== null);
-
-    } catch (e) {
-        console.error("Erro ao carregar garagem do backend:", e);
-        garagemVeiculos = []; // Limpa em caso de erro
-    }
-    atualizarListaGaragemUI();
-    verificarAgendamentosProximos();
-}
-
-/** Encontra veículo por ID. */
-function encontrarVeiculoPorId(id) { return garagemVeiculos.find(v => v.id === id); }
